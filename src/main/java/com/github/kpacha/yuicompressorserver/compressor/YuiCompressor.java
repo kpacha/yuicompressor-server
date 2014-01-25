@@ -1,6 +1,5 @@
 package com.github.kpacha.yuicompressorserver.compressor;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -33,11 +32,12 @@ public class YuiCompressor extends Compressor {
      * Ask for the right adapter and delegate the compression to the returned
      * one
      */
-    public void compress(String contentType, String charset, BufferedReader in,
+    public void compress(String contentType, String charset, byte[] in,
 	    PrintWriter out, Reporter reporter) throws EvaluatorException,
 	    IOException, UnknownContentTypeException {
 	CompressorAdapter compressor = adapterFactory
-		.getCompressorByContentType(contentType, in, reporter);
+		.getCompressorByContentType(contentType, getBufferedReader(in),
+			reporter);
 	compressor.compress(out, -1);
     }
 

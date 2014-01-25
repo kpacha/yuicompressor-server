@@ -1,5 +1,8 @@
 package com.github.kpacha.yuicompressorserver;
 
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.CacheManager;
+
 import org.eclipse.jetty.server.Server;
 
 import com.github.kpacha.yuicompressorserver.adapter.AdapterFactory;
@@ -26,7 +29,8 @@ public class YuiCompressorServer {
 	String hashAlgorithm = getAlgorithm(args);
 
 	Compressor compressor = new CachedCompressor(new YuiCompressor(
-		new AdapterFactory()), new BufferedContentHasher(hashAlgorithm));
+		new AdapterFactory()),
+		new BufferedContentHasher(hashAlgorithm), getFreshCache());
 
 	Server server = new Server(port);
 	server.setHandler(new YuiCompressorHandler(compressor));
@@ -49,6 +53,13 @@ public class YuiCompressorServer {
 	    port = Integer.parseInt(args[0]);
 	}
 	return port;
+    }
+
+    private static Cache getFreshCache() {
+	CacheManager singletonManager = CacheManager.create();
+	Cache memoryOnlyCache = new Cache("testCache", 5000, false, false, 5, 2);
+	singletonManager.addCache(memoryOnlyCache);
+	return singletonManager.getCache("testCache");
     }
 
 }

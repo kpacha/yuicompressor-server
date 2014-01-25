@@ -1,10 +1,11 @@
 package com.github.kpacha.yuicompressorserver.compressor;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.concurrent.ConcurrentHashMap;
+
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.Element;
 
 import org.mozilla.javascript.EvaluatorException;
 
@@ -20,7 +21,7 @@ import com.github.kpacha.yuicompressorserver.utils.BufferedContentHasher;
 public class CachedCompressor extends Compressor {
 
     private Compressor actualCompressor;
-    private ConcurrentHashMap<String, String> cache;
+    private Cache cache;
     private BufferedContentHasher hasher;
 
     /**
@@ -28,11 +29,12 @@ public class CachedCompressor extends Compressor {
      * 
      * @param actualCompressor
      * @param bufferedContentHasher
+     * @param cache
      */
     public CachedCompressor(Compressor actualCompressor,
-	    BufferedContentHasher bufferedContentHasher) {
+	    BufferedContentHasher bufferedContentHasher, Cache cache) {
 	this.actualCompressor = actualCompressor;
-	cache = new ConcurrentHashMap<String, String>();
+	this.cache = cache;
 	hasher = bufferedContentHasher;
     }
 
@@ -41,21 +43,25 @@ public class CachedCompressor extends Compressor {
      * compression and cache the result. Finally, write the compressed response
      * into the PrintWriter.
      */
-    public void compress(String contentType, String charset, BufferedReader in,
+    public void compress(String contentType, String charset, byte[] in,
 	    PrintWriter out, Reporter reporter) throws EvaluatorException,
 	    IOException, UnknownContentTypeException {
-	String hash = hasher.getHash(in, charset);
-	String compressedOutput = cache.get(hash);
-	if (compressedOutput == null) {
-	    compressedOutput = getCompressedOutput(contentType, charset,
-		    getBufferedReader(), reporter);
-	    cache.put(hash, compressedOutput);
+	String hash = hasher.getHash(getBufferedReader(in), charset);
+	String compressedOutput = null;
+	Element element = cache.get(hash);
+	if (element == null) {
+	    compressedOutput = getCompressedOutput(contentType, charset, in,
+		    reporter);
+	    element = new Element(hash, compressedOutput);
+	    cache.put(element);
+	} else {
+	    compressedOutput = (String) element.getObjectValue();
 	}
 	out.write(compressedOutput);
     }
 
     private String getCompressedOutput(String contentType, String charset,
-	    BufferedReader in, Reporter reporter) throws IOException,
+	    byte[] in, Reporter reporter) throws IOException,
 	    UnknownContentTypeException {
 	StringWriter sw = new StringWriter();
 	actualCompressor.compress(contentType, charset, in,

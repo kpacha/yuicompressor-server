@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.kpacha</groupId>
 	<artifactId>yuicompressor-server</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.1.0-SNAPSHOT</version>
 	<name>yui-compressor server</name>
 	<description>Standalone yui-compressor server</description>
 
@@ -12,6 +12,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<jetty.version>9.1.1.v20140108</jetty.version>
 		<yuicompressor.version>2.4.6</yuicompressor.version>
+		<ehcache.version>2.8.0</ehcache.version>
 		<maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
 		<jdk.version>1.7</jdk.version>
 	</properties>
@@ -39,6 +40,12 @@
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-servlet</artifactId>
 			<version>${jetty.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache</artifactId>
+			<version>${ehcache.version}</version>
 		</dependency>
 
 		<dependency>

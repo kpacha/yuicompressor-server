@@ -20,8 +20,6 @@ import com.github.kpacha.yuicompressorserver.reporter.Reporter;
  */
 abstract public class Compressor {
 
-    byte[] content;
-
     /**
      * Write the compressed version of the content of the BufferedReader param
      * into the received PrintWriter
@@ -38,15 +36,15 @@ abstract public class Compressor {
     public void compress(String contentType, String charset, InputStream in,
 	    PrintWriter out, Reporter reporter) throws EvaluatorException,
 	    IOException, UnknownContentTypeException {
-	content = getContent(in);
-	compress(contentType, charset, getBufferedReader(), out, reporter);
+	compress(contentType, charset, getContent(in), out, reporter);
     }
 
     abstract public void compress(String contentType, String charset,
-	    BufferedReader in, PrintWriter out, Reporter reporter)
+	    byte[] in, PrintWriter out, Reporter reporter)
 	    throws EvaluatorException, IOException, UnknownContentTypeException;
 
-    protected BufferedReader getBufferedReader() throws IOException {
+    protected BufferedReader getBufferedReader(byte[] content)
+	    throws IOException {
 	return new BufferedReader(new InputStreamReader(
 		new ByteArrayInputStream(content)));
     }

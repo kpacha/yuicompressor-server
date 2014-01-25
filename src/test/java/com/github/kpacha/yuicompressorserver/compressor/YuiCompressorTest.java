@@ -37,8 +37,8 @@ public class YuiCompressorTest extends TestCase {
 
 	YuiCompressor compressor = new YuiCompressor(adapterFactory);
 
-	compressor.compress(expectedContentType, "someCharset",
-		mock(BufferedReader.class), out, reporter);
+	compressor.compress(expectedContentType, "someCharset", new byte[0],
+		out, reporter);
 
 	verify(adapter).compress(eq(out), eq(-1));
     }

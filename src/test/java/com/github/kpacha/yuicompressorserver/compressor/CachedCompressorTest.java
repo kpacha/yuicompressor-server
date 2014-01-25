@@ -16,6 +16,8 @@ import java.io.StringWriter;
 import java.security.NoSuchAlgorithmException;
 
 import junit.framework.TestCase;
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.CacheManager;
 
 import org.mozilla.javascript.EvaluatorException;
 
@@ -32,16 +34,22 @@ public class CachedCompressorTest extends TestCase {
     private Reporter reporter;
     private PrintWriter out;
     private BufferedContentHasher hasher;
+    private CacheManager cacheManager;
 
     public void setUp() throws NoSuchAlgorithmException, IOException {
 	compressor = mock(Compressor.class);
 	hasher = mock(BufferedContentHasher.class);
 	when(hasher.getHash((BufferedReader) any(), (String) any()))
 		.thenReturn("someHash");
-	cachedCompressor = new CachedCompressor(compressor, hasher);
+	cachedCompressor = new CachedCompressor(compressor, hasher,
+		getFreshCache());
 	expectedContentType = "some-content-type";
 	reporter = new YuiErrorReporter();
 	out = new PrintWriter(new StringWriter());
+    }
+
+    public void tearDown() {
+	cacheManager.shutdown();
     }
 
     public void testCompress() throws EvaluatorException, IOException,
@@ -53,7 +61,7 @@ public class CachedCompressorTest extends TestCase {
 		reporter);
 
 	verify(compressor).compress(eq(expectedContentType), eq(charset),
-		(BufferedReader) any(), (PrintWriter) any(), eq(reporter));
+		(byte[]) any(), (PrintWriter) any(), eq(reporter));
 	verify(hasher).getHash((BufferedReader) any(), (String) any());
     }
 
@@ -69,8 +77,14 @@ public class CachedCompressorTest extends TestCase {
 		reporter);
 
 	verify(compressor, times(1)).compress((String) any(), (String) any(),
-		(BufferedReader) any(), (PrintWriter) any(), (Reporter) any());
+		(byte[]) any(), (PrintWriter) any(), (Reporter) any());
 	verify(hasher, times(2))
 		.getHash((BufferedReader) any(), (String) any());
+    }
+
+    private Cache getFreshCache() {
+	cacheManager = CacheManager.create();
+	cacheManager.addCache(new Cache("testCache", 5000, false, false, 5, 2));
+	return cacheManager.getCache("testCache");
     }
 }
