@@ -12,6 +12,8 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<jetty.version>9.1.1.v20140108</jetty.version>
 		<yuicompressor.version>2.4.6</yuicompressor.version>
+		<maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
+		<jdk.version>1.7</jdk.version>
 	</properties>
 
 	<dependencies>
@@ -92,6 +94,18 @@
 					</archive>
 				</configuration>
 			</plugin>
+
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>${maven-compiler-plugin.version}</version>
+					<configuration>
+						<source>${jdk.version}</source>
+						<target>${jdk.version}</target>
+					</configuration>
+				</plugin>
+			</plugins>
 		</plugins>
 	</build>
 </project>
