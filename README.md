@@ -10,8 +10,8 @@ Powered by [jetty](http://www.eclipse.org/jetty/) and [yui-compressor](http://yu
 #Requirements
 
 * git
-* jdk 1.5 or newer
-* mvn 2 or greatter
+* jdk 1.7
+* mvn 3
 
 #Install
 
@@ -37,7 +37,7 @@ And, after testing the code, the yuicompressor-server.jar should be on your loca
 
 Note the optional arguments!
 
-* `PORT` allows you to set the service port. Default value is 8080
+* `PORT` allows you to set the service port. Default value is `8080`
 * `ALGORITHM` allows you to set the hashing algorithm. Default: `SHA-1`
 
 #Usage
