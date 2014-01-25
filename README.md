@@ -56,6 +56,7 @@ Do not forget to set the `Content-Type` header with the right charset or get rea
 
 Supose you have several hosts where you have to compress your javascript and css files. Why would you spend so much time doing the same operation again and again? And are your files different from one host to another or are they almost the same? How often do you deploy? Just take the DRY pattern to the next abstraction level and delegate that process to a dedicated service!
 
+	$ cd src/test/resources
 	$ ab -c 10 -n 100 -H "Content-Type:text/css; charset=utf-8" -p test.css -T "text/css" http://localhost:8080/
 	This is ApacheBench, Version 2.3 <$Revision: 1430300 $>
 	Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
