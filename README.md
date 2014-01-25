@@ -21,7 +21,7 @@ Clone the project and install it!
 	$ cd yuicompressor-server
 	$ mvn install
 
-And, after testing the code, the yuicompressor-server-0.1.0-SNAPSHOT.jar should be on your local maven repo
+And, after testing the code, the yuicompressor-server-0.2.0-SNAPSHOT.jar should be on your local maven repo
 
 #Run with maven
 
@@ -33,7 +33,7 @@ And, after testing the code, the yuicompressor-server-0.1.0-SNAPSHOT.jar should 
 	# ...and you are ready for deploy the fat-jar!
 
 	# start your yuicompressor service
-	$ java -jar target/yuicompressor-server-0.1.0-SNAPSHOT-jar-with-dependencies.jar [<PORT> [<ALGORITHM>]]
+	$ java -jar target/yuicompressor-server-0.2.0-SNAPSHOT-jar-with-dependencies.jar [<PORT> [<ALGORITHM>]]
 
 Note the optional arguments!
 
