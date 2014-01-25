@@ -54,7 +54,7 @@ public class YuiCompressorHandler extends AbstractHandler {
 	try {
 	    sendHeaders(request, response);
 	    compressor.compress(request.getContentType(),
-		    request.getCharacterEncoding(), request.getReader(),
+		    request.getCharacterEncoding(), request.getInputStream(),
 		    response.getWriter(), reporter);
 	} catch (EvaluatorException e) {
 	    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
@@ -65,7 +66,7 @@ public class YuiCompressorHandlerTest extends TestCase {
 	String message = "some exception message";
 	Compressor compressor = mock(Compressor.class);
 	doThrow(new EvaluatorException(message)).when(compressor).compress(
-		eq(contentType), eq(encoding), (BufferedReader) any(),
+		eq(contentType), eq(encoding), (InputStream) any(),
 		(PrintWriter) any(), (YuiErrorReporter) any());
 
 	YuiCompressorHandler handler = new YuiCompressorHandler(compressor);
@@ -81,9 +82,8 @@ public class YuiCompressorHandlerTest extends TestCase {
 	String message = "some exception message";
 	Compressor compressor = mock(Compressor.class);
 	doThrow(new UnknownContentTypeException(message)).when(compressor)
-		.compress(eq(contentType), eq(encoding),
-			(BufferedReader) any(), (PrintWriter) any(),
-			(YuiErrorReporter) any());
+		.compress(eq(contentType), eq(encoding), (InputStream) any(),
+			(PrintWriter) any(), (YuiErrorReporter) any());
 
 	YuiCompressorHandler handler = new YuiCompressorHandler(compressor);
 	handler.handle("/", mock(Request.class), mockRequest(), response);
@@ -99,7 +99,7 @@ public class YuiCompressorHandlerTest extends TestCase {
 	handler.handle("/", mock(Request.class), mockRequest(), response);
 
 	verify(compressor).compress(eq(contentType), eq(encoding),
-		(BufferedReader) any(), (PrintWriter) any(),
+		(InputStream) any(), (PrintWriter) any(),
 		(YuiErrorReporter) any());
 
 	verify(response).setStatus(HttpServletResponse.SC_OK);

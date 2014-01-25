@@ -1,5 +1,6 @@
 package com.github.kpacha.yuicompressorserver.compressor;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -27,16 +28,17 @@ public class YuiCompressorTest extends TestCase {
 	String expectedContentType = "some-content-type";
 	CompressorAdapter adapter = mock(CompressorAdapter.class);
 	Reporter reporter = new YuiErrorReporter();
-	BufferedReader in = mock(BufferedReader.class);
 	AdapterFactory adapterFactory = mock(AdapterFactory.class);
 	when(
-		adapterFactory.getCompressorByContentType(expectedContentType,
-			in, reporter)).thenReturn(adapter);
+		adapterFactory.getCompressorByContentType(
+			eq(expectedContentType), (BufferedReader) any(),
+			eq(reporter))).thenReturn(adapter);
 	PrintWriter out = new PrintWriter(new StringWriter());
 
 	YuiCompressor compressor = new YuiCompressor(adapterFactory);
 
-	compressor.compress(expectedContentType, "someCharset", in, out, reporter);
+	compressor.compress(expectedContentType, "someCharset",
+		mock(BufferedReader.class), out, reporter);
 
 	verify(adapter).compress(eq(out), eq(-1));
     }

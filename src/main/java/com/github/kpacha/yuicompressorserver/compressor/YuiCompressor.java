@@ -16,7 +16,7 @@ import com.github.kpacha.yuicompressorserver.reporter.Reporter;
  * 
  * @author kpacha
  */
-public class YuiCompressor implements Compressor {
+public class YuiCompressor extends Compressor {
 
     private AdapterFactory adapterFactory;
 

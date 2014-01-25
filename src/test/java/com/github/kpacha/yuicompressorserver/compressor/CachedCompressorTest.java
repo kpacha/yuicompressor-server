@@ -8,7 +8,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.security.NoSuchAlgorithmException;
@@ -44,23 +46,27 @@ public class CachedCompressorTest extends TestCase {
 
     public void testCompress() throws EvaluatorException, IOException,
 	    UnknownContentTypeException, NoSuchAlgorithmException {
-	BufferedReader in = mock(BufferedReader.class);
+	InputStream in = new ByteArrayInputStream(
+		"someContent".getBytes("UTF-8"));
 
 	cachedCompressor.compress(expectedContentType, charset, in, out,
 		reporter);
 
 	verify(compressor).compress(eq(expectedContentType), eq(charset),
-		eq(in), (PrintWriter) any(), eq(reporter));
-	verify(hasher).getHash(eq(in), (String) any());
+		(BufferedReader) any(), (PrintWriter) any(), eq(reporter));
+	verify(hasher).getHash((BufferedReader) any(), (String) any());
     }
 
     public void testGetCachedCompress() throws EvaluatorException, IOException,
 	    UnknownContentTypeException, NoSuchAlgorithmException {
-	cachedCompressor.compress(expectedContentType, charset,
-		mock(BufferedReader.class), out, reporter);
+	InputStream in = new ByteArrayInputStream(
+		"someContent".getBytes("UTF-8"));
 
-	cachedCompressor.compress(expectedContentType, charset,
-		mock(BufferedReader.class), out, reporter);
+	cachedCompressor.compress(expectedContentType, charset, in, out,
+		reporter);
+
+	cachedCompressor.compress(expectedContentType, charset, in, out,
+		reporter);
 
 	verify(compressor, times(1)).compress((String) any(), (String) any(),
 		(BufferedReader) any(), (PrintWriter) any(), (Reporter) any());

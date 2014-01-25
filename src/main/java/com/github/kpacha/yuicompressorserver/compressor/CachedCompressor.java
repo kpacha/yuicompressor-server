@@ -17,7 +17,7 @@ import com.github.kpacha.yuicompressorserver.utils.BufferedContentHasher;
  * 
  * @author kpacha
  */
-public class CachedCompressor implements Compressor {
+public class CachedCompressor extends Compressor {
 
     private Compressor actualCompressor;
     private ConcurrentHashMap<String, String> cache;
@@ -47,8 +47,8 @@ public class CachedCompressor implements Compressor {
 	String hash = hasher.getHash(in, charset);
 	String compressedOutput = cache.get(hash);
 	if (compressedOutput == null) {
-	    compressedOutput = getCompressedOutput(contentType, charset, in,
-		    reporter);
+	    compressedOutput = getCompressedOutput(contentType, charset,
+		    getBufferedReader(), reporter);
 	    cache.put(hash, compressedOutput);
 	}
 	out.write(compressedOutput);
