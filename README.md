@@ -25,20 +25,30 @@ And, after testing the code, the yuicompressor-server-0.2.0-SNAPSHOT.jar should 
 
 #Run with maven
 
+If the first test is hard, people usually quit the test... So check this out! Just type one more maven command and done! 
+
 	$ mvn clean compile exec:java
 
+Your service should be waiting for you at port `8080`. Nice, uh?
+
 #Build and Run the fat-jar
+
+So, let's build it for real, deploy it to an actual server and run it!
 
 	$ mvn clean compile assembly:single
 	# ...and you are ready for deploy the fat-jar!
 
-	# start your yuicompressor service
+	# ... your deployment process here ...
+
+	# start the yuicompressor service
 	$ java -jar target/yuicompressor-server-0.2.0-SNAPSHOT-jar-with-dependencies.jar [<PORT> [<ALGORITHM>]]
 
 Note the optional arguments!
 
 * `PORT` allows you to set the service port. Default value is `8080`
 * `ALGORITHM` allows you to set the hashing algorithm. Default: `SHA-1`
+
+And you already have a yuicompressor-server running!
 
 #Usage
 
@@ -108,3 +118,5 @@ Supose you have several hosts where you have to compress your javascript and css
 
 
 Was that enough?
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/kpacha/yuicompressor-server/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
