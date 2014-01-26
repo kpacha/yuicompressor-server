@@ -1,7 +1,7 @@
 yuicompressor-server
 ====================
 
-A pure java HTTP service with an embeded yuicompressor engine
+A pure java HTTP service with an embedded yuicompressor engine
 
 [![Build Status](https://travis-ci.org/kpacha/yuicompressor-server.png?branch=master)](https://travis-ci.org/kpacha/yuicompressor-server)
 
