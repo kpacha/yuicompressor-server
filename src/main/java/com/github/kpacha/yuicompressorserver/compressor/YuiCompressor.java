@@ -6,7 +6,6 @@ import java.io.PrintWriter;
 import org.mozilla.javascript.EvaluatorException;
 
 import com.github.kpacha.yuicompressorserver.adapter.AdapterFactory;
-import com.github.kpacha.yuicompressorserver.adapter.CompressorAdapter;
 import com.github.kpacha.yuicompressorserver.adapter.UnknownContentTypeException;
 import com.github.kpacha.yuicompressorserver.reporter.Reporter;
 
@@ -17,6 +16,7 @@ import com.github.kpacha.yuicompressorserver.reporter.Reporter;
  */
 public class YuiCompressor extends Compressor {
 
+    private static final int LINE_BREAK = -1;
     private AdapterFactory adapterFactory;
 
     /**
@@ -35,10 +35,8 @@ public class YuiCompressor extends Compressor {
     public void compress(String contentType, String charset, byte[] in,
 	    PrintWriter out, Reporter reporter) throws EvaluatorException,
 	    IOException, UnknownContentTypeException {
-	CompressorAdapter compressor = adapterFactory
-		.getCompressorByContentType(contentType, getBufferedReader(in),
-			reporter);
-	compressor.compress(out, -1);
+	adapterFactory.getCompressorByContentType(contentType,
+		getBufferedReader(in), reporter).compress(out, LINE_BREAK);
     }
 
 }

@@ -47,17 +47,13 @@ public class CachedCompressor extends Compressor {
 	    PrintWriter out, Reporter reporter) throws EvaluatorException,
 	    IOException, UnknownContentTypeException {
 	String hash = hasher.getHash(getBufferedReader(in), charset);
-	String compressedOutput = null;
 	Element element = cache.get(hash);
 	if (element == null) {
-	    compressedOutput = getCompressedOutput(contentType, charset, in,
-		    reporter);
-	    element = new Element(hash, compressedOutput);
+	    element = new Element(hash, getCompressedOutput(contentType,
+		    charset, in, reporter));
 	    cache.put(element);
-	} else {
-	    compressedOutput = (String) element.getObjectValue();
 	}
-	out.write(compressedOutput);
+	out.write((String) element.getObjectValue());
     }
 
     private String getCompressedOutput(String contentType, String charset,
