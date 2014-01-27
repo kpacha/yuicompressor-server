@@ -20,6 +20,12 @@ import com.github.kpacha.yuicompressorserver.utils.BufferedContentHasher;
 public class YuiCompressorServer {
     private static final int DEFAULT_PORT = 8080;
     private static final String DEFAULT_ALGORITHM = "SHA-1";
+    private static final String CACHE_NAME = "yuicompressor-server";
+    private static final int CACHE_TTL = 604800; // a week
+    private static final int CACHE_TIME_TO_IDLE = 604800; // a week
+    private static final boolean CACHE_ETERNAL = false;
+    private static final boolean CACHE_OVERFLOW_TO_DISK = false;
+    private static final int CACHE_MAX_ITEMS = 5000;
 
     /**
      * @param args
@@ -57,9 +63,11 @@ public class YuiCompressorServer {
 
     private static Cache getFreshCache() {
 	CacheManager singletonManager = CacheManager.create();
-	Cache memoryOnlyCache = new Cache("testCache", 5000, false, false, 5, 2);
+	Cache memoryOnlyCache = new Cache(CACHE_NAME, CACHE_MAX_ITEMS,
+		CACHE_OVERFLOW_TO_DISK, CACHE_ETERNAL, CACHE_TTL,
+		CACHE_TIME_TO_IDLE);
 	singletonManager.addCache(memoryOnlyCache);
-	return singletonManager.getCache("testCache");
+	return singletonManager.getCache(CACHE_NAME);
     }
 
 }
