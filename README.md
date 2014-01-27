@@ -21,7 +21,7 @@ Clone the project and install it!
 	$ cd yuicompressor-server
 	$ mvn install
 
-And, after testing the code, the yuicompressor-server-0.2.0-SNAPSHOT.jar should be on your local maven repo
+And, after testing the code, the yuicompressor-server-0.2.1-SNAPSHOT.jar should be on your local maven repo
 
 #Run with maven
 
@@ -36,12 +36,12 @@ Your service should be waiting for you at port `8080`. Nice, uh?
 So, let's build it for real, deploy it to an actual server and run it!
 
 	$ mvn clean compile assembly:single
-	# ...and you are ready for deploy the fat-jar!
+	# ...and you are ready for deploy the fat-jar! (it's placed at `target/`)
 
 	# ... your deployment process here ...
 
 	# start the yuicompressor service
-	$ java -jar target/yuicompressor-server-0.2.0-SNAPSHOT-jar-with-dependencies.jar [<PORT> [<ALGORITHM>]]
+	$ java -jar yuicompressor-server-0.2.1-SNAPSHOT-jar-with-dependencies.jar [<PORT> [<ALGORITHM>]]
 
 Note the optional arguments!
 
@@ -58,7 +58,7 @@ Simple demo with curl:
 
 	$ curl -H "Content-Type:text/css; charset=utf-8" -X POST -id 'a {}       c{ color=red;      }' http://localhost:8080/
 	# or
-	$ curl -H "Content-Type:text/css; charset=utf-8" -X POST -id @src/test/resources/test.css http://localhost:8080/
+	$ curl -H "Content-Type:text/css; charset=utf-8" -X POST -id @src/test/resources/background-position.css http://localhost:8080/
 
 Do not forget to set the `Content-Type` header with the right charset or get ready to die a painful, lonely death!
 
@@ -67,7 +67,7 @@ Do not forget to set the `Content-Type` header with the right charset or get rea
 Supose you have several hosts where you have to compress your javascript and css files. Why would you spend so much time doing the same operation again and again? And are your files different from one host to another or are they almost the same? How often do you deploy? Just take the DRY pattern to the next abstraction level and delegate that process to a dedicated service!
 
 	$ cd src/test/resources
-	$ ab -c 10 -n 100 -H "Content-Type:text/css; charset=utf-8" -p test.css -T "text/css" http://localhost:8080/
+	$ ab -c 10 -n 100 -H "Content-Type:text/css; charset=utf-8" -p background-position.css -T "text/css" http://localhost:8080/
 	This is ApacheBench, Version 2.3 <$Revision: 1430300 $>
 	Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
 	Licensed to The Apache Software Foundation, http://www.apache.org/
