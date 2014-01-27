@@ -31,14 +31,14 @@ public class YuiCompressorServer {
      * @param args
      */
     public static void main(String[] args) throws Exception {
-	int port = getPort(args);
-	String hashAlgorithm = getAlgorithm(args);
+	Compressor compressor = new YuiCompressor(new AdapterFactory());
+	if (shouldCache(args)) {
+	    compressor = new CachedCompressor(compressor,
+		    new BufferedContentHasher(getAlgorithm(args)),
+		    getFreshCache());
+	}
 
-	Compressor compressor = new CachedCompressor(new YuiCompressor(
-		new AdapterFactory()),
-		new BufferedContentHasher(hashAlgorithm), getFreshCache());
-
-	Server server = new Server(port);
+	Server server = new Server(getPort(args));
 	server.setHandler(new YuiCompressorHandler(compressor));
 
 	server.start();
@@ -59,6 +59,14 @@ public class YuiCompressorServer {
 	    port = Integer.parseInt(args[0]);
 	}
 	return port;
+    }
+
+    private static boolean shouldCache(String[] args) {
+	boolean shouldCache = true;
+	if (args.length > 2) {
+	    shouldCache = Integer.parseInt(args[2]) != 0;
+	}
+	return shouldCache;
     }
 
     private static Cache getFreshCache() {

@@ -49,9 +49,9 @@ public class CachedCompressor extends Compressor {
 	String hash = hasher.getHash(getBufferedReader(in), charset);
 	Element element = cache.get(hash);
 	if (element == null) {
-	    element = new Element(hash, getCompressedOutput(contentType,
-		    charset, in, reporter));
-	    cache.put(element);
+	    cache.put(new Element(hash, getCompressedOutput(contentType,
+		    charset, in, reporter)));
+	    element = cache.get(hash);
 	}
 	out.write((String) element.getObjectValue());
     }
