@@ -1,6 +1,5 @@
 package com.github.kpacha.yuicompressorserver.utils;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -15,7 +14,7 @@ public class BufferedContentHasher {
     private MessageDigest md;
 
     /**
-     * The defualt constructor sets up the internal message digester with the
+     * The default constructor sets up the internal message digester with the
      * received algorithm
      * 
      * @param algorithm
@@ -27,30 +26,26 @@ public class BufferedContentHasher {
     }
 
     /**
-     * Hash the content of the BufferedReader
+     * Hash the received String
      * 
      * @param in
      * @param charset
      * @return
      * @throws IOException
      */
-    public String getHash(BufferedReader in, String charset) throws IOException {
-	return getDigest(parse(in), charset);
+    public String getHash(String in, String charset) throws IOException {
+	return getDigest(in, charset);
     }
 
-    private StringBuffer parse(BufferedReader in) throws IOException {
-	StringBuffer srcsb = new StringBuffer();
-	String line;
-	while ((line = in.readLine()) != null) {
-	    srcsb.append(line);
-	}
-	return srcsb;
+    private String getDigest(String message, String charset)
+	    throws UnsupportedEncodingException {
+	return getDigest(message.getBytes(charset));
     }
 
-    private String getDigest(StringBuffer input, String charset)
+    private String getDigest(byte[] message)
 	    throws UnsupportedEncodingException {
 	md.reset();
-	return byteArrayToString(md.digest(input.toString().getBytes(charset)));
+	return byteArrayToString(md.digest(message));
     }
 
     private String byteArrayToString(byte[] result) {

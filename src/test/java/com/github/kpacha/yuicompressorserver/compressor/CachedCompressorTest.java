@@ -1,16 +1,12 @@
 package com.github.kpacha.yuicompressorserver.compressor;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.security.NoSuchAlgorithmException;
@@ -31,6 +27,8 @@ public class CachedCompressorTest extends TestCase {
     private CachedCompressor cachedCompressor;
     private String expectedContentType = "some-content-type";
     private String charset = "UTF-8";
+    private String input = "some uncompressed input";
+    private String output = "some nice compressed output";
     private Reporter reporter;
     private PrintWriter out;
     private BufferedContentHasher hasher;
@@ -39,8 +37,8 @@ public class CachedCompressorTest extends TestCase {
     public void setUp() throws NoSuchAlgorithmException, IOException {
 	compressor = mock(Compressor.class);
 	hasher = mock(BufferedContentHasher.class);
-	when(hasher.getHash((BufferedReader) any(), (String) any()))
-		.thenReturn("someHash");
+	when(hasher.getHash((String) any(), (String) any())).thenReturn(
+		"someHash");
 	cachedCompressor = new CachedCompressor(compressor, hasher,
 		getFreshCache());
 	expectedContentType = "some-content-type";
@@ -54,37 +52,34 @@ public class CachedCompressorTest extends TestCase {
 
     public void testCompress() throws EvaluatorException, IOException,
 	    UnknownContentTypeException, NoSuchAlgorithmException {
-	InputStream in = new ByteArrayInputStream(
-		"someContent".getBytes("UTF-8"));
+	when(compressor.compress(expectedContentType, charset, input, reporter))
+		.thenReturn(output);
+	assertEquals(output, cachedCompressor.compress(expectedContentType,
+		charset, input, reporter));
 
-	cachedCompressor.compress(expectedContentType, charset, in, out,
+	verify(compressor).compress(expectedContentType, charset, input,
 		reporter);
-
-	verify(compressor).compress(eq(expectedContentType), eq(charset),
-		(byte[]) any(), (PrintWriter) any(), eq(reporter));
-	verify(hasher).getHash((BufferedReader) any(), (String) any());
+	verify(hasher).getHash(input, charset);
     }
 
     public void testGetCachedCompress() throws EvaluatorException, IOException,
 	    UnknownContentTypeException, NoSuchAlgorithmException {
-	InputStream in = new ByteArrayInputStream(
-		"someContent".getBytes("UTF-8"));
+	when(compressor.compress(expectedContentType, charset, input, reporter))
+		.thenReturn(output);
+	assertEquals(output, cachedCompressor.compress(expectedContentType,
+		charset, input, reporter));
 
-	cachedCompressor.compress(expectedContentType, charset, in, out,
-		reporter);
+	assertEquals(output, cachedCompressor.compress(expectedContentType,
+		charset, input, reporter));
 
-	cachedCompressor.compress(expectedContentType, charset, in, out,
-		reporter);
-
-	verify(compressor, times(1)).compress((String) any(), (String) any(),
-		(byte[]) any(), (PrintWriter) any(), (Reporter) any());
-	verify(hasher, times(2))
-		.getHash((BufferedReader) any(), (String) any());
+	verify(compressor, times(1)).compress(expectedContentType, charset,
+		input, reporter);
+	verify(hasher, times(2)).getHash(input, charset);
     }
 
     private Cache getFreshCache() {
 	cacheManager = CacheManager.create();
-	cacheManager.addCache(new Cache("testCache", 5000, false, false, 5, 2));
+	cacheManager.addCache(new Cache("testCache", 1, false, false, 2, 2));
 	return cacheManager.getCache("testCache");
     }
 }

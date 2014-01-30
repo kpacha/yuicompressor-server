@@ -1,12 +1,7 @@
 package com.github.kpacha.yuicompressorserver.compressor;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 
 import org.mozilla.javascript.EvaluatorException;
 
@@ -27,38 +22,28 @@ abstract public class Compressor {
      * @param contentType
      * @param charset
      * @param in
-     * @param out
      * @param reporter
+     * @return
      * @throws EvaluatorException
      * @throws IOException
      * @throws UnknownContentTypeException
      */
-    public void compress(String contentType, String charset, InputStream in,
-	    PrintWriter out, Reporter reporter) throws EvaluatorException,
+    public String compress(String contentType, String charset,
+	    BufferedReader in, Reporter reporter) throws EvaluatorException,
 	    IOException, UnknownContentTypeException {
-	compress(contentType, charset, getContent(in), out, reporter);
+	return compress(contentType, charset, getContent(in), reporter);
     }
 
-    abstract public void compress(String contentType, String charset,
-	    byte[] in, PrintWriter out, Reporter reporter)
-	    throws EvaluatorException, IOException, UnknownContentTypeException;
+    abstract public String compress(String contentType, String charset,
+	    String in, Reporter reporter) throws EvaluatorException,
+	    IOException, UnknownContentTypeException;
 
-    protected BufferedReader getBufferedReader(byte[] content)
-	    throws IOException {
-	return new BufferedReader(new InputStreamReader(
-		new ByteArrayInputStream(content)));
-    }
-
-    private byte[] getContent(InputStream in) throws IOException {
-	ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-	byte[] buffer = new byte[1024];
-	int len;
-	while ((len = in.read(buffer)) > -1) {
-	    baos.write(buffer, 0, len);
+    private String getContent(BufferedReader in) throws IOException {
+	StringBuffer srcsb = new StringBuffer();
+	String line;
+	while ((line = in.readLine()) != null) {
+	    srcsb.append(line + "\n");
 	}
-	baos.flush();
-
-	return baos.toByteArray();
+	return srcsb.toString();
     }
 }

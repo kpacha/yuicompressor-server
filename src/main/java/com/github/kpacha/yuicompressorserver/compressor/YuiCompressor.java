@@ -1,11 +1,15 @@
 package com.github.kpacha.yuicompressorserver.compressor;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
 
 import org.mozilla.javascript.EvaluatorException;
 
 import com.github.kpacha.yuicompressorserver.adapter.AdapterFactory;
+import com.github.kpacha.yuicompressorserver.adapter.CompressorAdapter;
 import com.github.kpacha.yuicompressorserver.adapter.UnknownContentTypeException;
 import com.github.kpacha.yuicompressorserver.reporter.Reporter;
 
@@ -32,11 +36,25 @@ public class YuiCompressor extends Compressor {
      * Ask for the right adapter and delegate the compression to the returned
      * one
      */
-    public void compress(String contentType, String charset, byte[] in,
-	    PrintWriter out, Reporter reporter) throws EvaluatorException,
-	    IOException, UnknownContentTypeException {
-	adapterFactory.getCompressorByContentType(contentType,
-		getBufferedReader(in), reporter).compress(out, LINE_BREAK);
+    public String compress(String contentType, String charset, String in,
+	    Reporter reporter) throws EvaluatorException, IOException,
+	    UnknownContentTypeException {
+	return getCompressedOutput(getAdapter(contentType, in, reporter));
+    }
+
+    private String getCompressedOutput(CompressorAdapter adapter)
+	    throws IOException {
+	StringWriter writer = new StringWriter();
+	adapter.compress(writer, LINE_BREAK);
+	return writer.toString();
+    }
+
+    private CompressorAdapter getAdapter(String contentType, String in,
+	    Reporter reporter) throws IOException, UnknownContentTypeException {
+	BufferedReader reader = new BufferedReader(new InputStreamReader(
+		new ByteArrayInputStream(in.getBytes())));
+	return adapterFactory.getCompressorByContentType(contentType, reader,
+		reporter);
     }
 
 }
