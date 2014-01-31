@@ -9,9 +9,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.security.NoSuchAlgorithmException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -26,36 +28,44 @@ import org.mozilla.javascript.EvaluatorException;
 import com.github.kpacha.yuicompressorserver.adapter.UnknownContentTypeException;
 import com.github.kpacha.yuicompressorserver.compressor.Compressor;
 import com.github.kpacha.yuicompressorserver.reporter.YuiErrorReporter;
+import com.github.kpacha.yuicompressorserver.utils.BufferedContentHasher;
 
 public class YuiCompressorHandlerTest extends TestCase {
     private String contentType;
     private String encoding;
     private String httpMethod;
     private HttpServletResponse response;
+    private String input;
+    private BufferedReader bufferedReader;
 
     public void setUp() throws IOException {
 	contentType = "text/css";
 	encoding = "UTF-8";
 	response = mock(HttpServletResponse.class);
 	when(response.getWriter()).thenReturn(mock(PrintWriter.class));
+
+	input = "some uncompressed input";
+	bufferedReader = new BufferedReader(new InputStreamReader(
+		new ByteArrayInputStream(input.getBytes())));
     }
 
     public void testHandleGetOk() throws IOException, ServletException,
-	    UnknownContentTypeException {
+	    UnknownContentTypeException, NoSuchAlgorithmException {
 	httpMethod = "GET";
 	doTestHandleOk();
 	verifyCacheHeaders();
     }
 
     public void testHandlePostOk() throws IOException, ServletException,
-	    UnknownContentTypeException {
+	    UnknownContentTypeException, NoSuchAlgorithmException {
 	httpMethod = "POST";
 	doTestHandleOk();
 	verifyCacheHeaders();
     }
 
     public void testHandleNonCacheableOk() throws EvaluatorException,
-	    IOException, ServletException, UnknownContentTypeException {
+	    IOException, ServletException, UnknownContentTypeException,
+	    NoSuchAlgorithmException {
 	httpMethod = "PUT";
 	doTestHandleOk();
     }
@@ -66,10 +76,11 @@ public class YuiCompressorHandlerTest extends TestCase {
 	String message = "some exception message";
 	Compressor compressor = mock(Compressor.class);
 	doThrow(new EvaluatorException(message)).when(compressor).compress(
-		eq(contentType), eq(encoding), (InputStream) any(),
-		(PrintWriter) any(), (YuiErrorReporter) any());
+		eq(contentType), eq(encoding), eq(bufferedReader),
+		(YuiErrorReporter) any());
 
-	YuiCompressorHandler handler = new YuiCompressorHandler(compressor);
+	YuiCompressorHandler handler = new YuiCompressorHandler(compressor,
+		mock(BufferedContentHasher.class));
 	handler.handle("/", mock(Request.class), mockRequest(), response);
 
 	verify(response).setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -82,25 +93,29 @@ public class YuiCompressorHandlerTest extends TestCase {
 	String message = "some exception message";
 	Compressor compressor = mock(Compressor.class);
 	doThrow(new UnknownContentTypeException(message)).when(compressor)
-		.compress(eq(contentType), eq(encoding), (InputStream) any(),
-			(PrintWriter) any(), (YuiErrorReporter) any());
+		.compress(eq(contentType), eq(encoding), eq(bufferedReader),
+			(YuiErrorReporter) any());
 
-	YuiCompressorHandler handler = new YuiCompressorHandler(compressor);
+	YuiCompressorHandler handler = new YuiCompressorHandler(compressor,
+		mock(BufferedContentHasher.class));
 	handler.handle("/", mock(Request.class), mockRequest(), response);
 
 	verify(response).setStatus(HttpServletResponse.SC_BAD_REQUEST);
     }
 
     private void doTestHandleOk() throws IOException, ServletException,
-	    UnknownContentTypeException {
+	    UnknownContentTypeException, NoSuchAlgorithmException {
+	String output = "some compressed output";
+
 	Compressor compressor = mock(Compressor.class);
+	when(
+		compressor.compress((String) any(), (String) any(),
+			eq(bufferedReader), (YuiErrorReporter) any()))
+		.thenReturn(output);
 
-	YuiCompressorHandler handler = new YuiCompressorHandler(compressor);
+	YuiCompressorHandler handler = new YuiCompressorHandler(compressor,
+		new BufferedContentHasher("md5"));
 	handler.handle("/", mock(Request.class), mockRequest(), response);
-
-	verify(compressor).compress(eq(contentType), eq(encoding),
-		(InputStream) any(), (PrintWriter) any(),
-		(YuiErrorReporter) any());
 
 	verify(response).setStatus(HttpServletResponse.SC_OK);
 	verify(response).setCharacterEncoding(encoding);
@@ -121,7 +136,7 @@ public class YuiCompressorHandlerTest extends TestCase {
 	when(request.getContentType()).thenReturn(contentType);
 	when(request.getCharacterEncoding()).thenReturn(encoding);
 	when(request.getMethod()).thenReturn(httpMethod);
-	when(request.getReader()).thenReturn(mock(BufferedReader.class));
+	when(request.getReader()).thenReturn(bufferedReader);
 	return request;
     }
 }

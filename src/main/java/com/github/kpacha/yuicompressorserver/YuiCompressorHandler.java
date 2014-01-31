@@ -6,6 +6,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.eclipse.jetty.http.HttpHeader;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
@@ -14,6 +15,7 @@ import org.mozilla.javascript.EvaluatorException;
 import com.github.kpacha.yuicompressorserver.compressor.Compressor;
 import com.github.kpacha.yuicompressorserver.reporter.Reporter;
 import com.github.kpacha.yuicompressorserver.reporter.YuiErrorReporter;
+import com.github.kpacha.yuicompressorserver.utils.BufferedContentHasher;
 
 /**
  * The yuicompressor jetty-based servlet handler
@@ -24,16 +26,21 @@ import com.github.kpacha.yuicompressorserver.reporter.YuiErrorReporter;
  * @author kpacha
  */
 public class YuiCompressorHandler extends AbstractHandler {
+    private static Logger logger = Logger.getLogger(YuiCompressorHandler.class);
 
     private Compressor compressor;
+    private BufferedContentHasher hasher;
 
     /**
      * Default constructor.
      * 
      * @param compressor
+     * @param hasher
      */
-    public YuiCompressorHandler(Compressor compressor) {
+    public YuiCompressorHandler(Compressor compressor,
+	    BufferedContentHasher hasher) {
 	this.compressor = compressor;
+	this.hasher = hasher;
     }
 
     /*
@@ -50,15 +57,23 @@ public class YuiCompressorHandler extends AbstractHandler {
 	Reporter reporter = new YuiErrorReporter();
 	try {
 	    sendHeaders(request, response);
-	    compressor.compress(request.getContentType(),
-		    request.getCharacterEncoding(), request.getInputStream(),
-		    response.getWriter(), reporter);
+	    String charset = request.getCharacterEncoding();
+	    String compressedOutput = compressor.compress(
+		    request.getContentType(), charset, request.getReader(),
+		    reporter);
+	    response.setHeader(HttpHeader.CONTENT_MD5.asString(),
+		    hasher.getHash(compressedOutput, charset));
+	    response.getWriter().write(compressedOutput);
+	    response.flushBuffer();
 	} catch (EvaluatorException e) {
 	    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 	    response.getWriter().print(reporter.getReport());
+	    logger.warn(e.getMessage());
+	    logger.warn(reporter.getReport());
 	} catch (Exception e) {
 	    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 	    response.getWriter().print(e.getMessage());
+	    logger.warn(e.getMessage());
 	}
     }
 
