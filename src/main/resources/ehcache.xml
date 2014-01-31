@@ -1,0 +1,14 @@
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../config/ehcache.xsd">
+    <diskStore path="java.io.tmpdir"/>
+
+    <cache name="yuicompressor-server"
+           maxElementsInMemory="5000"
+           eternal="false"
+           timeToLiveSeconds="0"
+           overflowToDisk="false"
+           timeToIdleSeconds="604800"
+           maxElementsOnDisk="0"
+           diskExpiryThreadIntervalSeconds="0"
+           memoryStoreEvictionPolicy="LRU"/>
+
+</ehcache>
