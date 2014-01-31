@@ -10,19 +10,18 @@ import java.security.NoSuchAlgorithmException;
  * 
  * @author kpacha
  */
-public class BufferedContentHasher {
+public class Md5Hasher {
+    private static final String ALGORITHM = "md5";
     private MessageDigest md;
 
     /**
      * The default constructor sets up the internal message digester with the
-     * received algorithm
+     * md5 algorithm
      * 
-     * @param algorithm
      * @throws NoSuchAlgorithmException
      */
-    public BufferedContentHasher(String algorithm)
-	    throws NoSuchAlgorithmException {
-	md = MessageDigest.getInstance(algorithm);
+    public Md5Hasher() throws NoSuchAlgorithmException {
+	md = MessageDigest.getInstance(ALGORITHM);
     }
 
     /**

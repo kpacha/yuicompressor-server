@@ -26,23 +26,9 @@ public class ConfigurationTest extends TestCase {
 	assertEquals(80, config.getPort());
     }
 
-    public void testDefaultAlgorithm() throws ParseException {
-	Configuration config = new Configuration(new String[] {});
-	assertEquals("md5", config.getAlgorithm());
-    }
-
-    public void testCustomAlgorithm() throws ParseException {
-	String algorithm = "someAlgorithm";
-	Configuration config = new Configuration(
-		new String[] { "-h", algorithm });
-	assertEquals(algorithm, config.getAlgorithm());
-    }
-
     public void testAllIn() throws ParseException {
-	String algorithm = "someAlgorithm";
-	Configuration config = new Configuration(new String[] { "-h",
-		algorithm, "-p", "80", "-c" });
-	assertEquals(algorithm, config.getAlgorithm());
+	Configuration config = new Configuration(new String[] { "-p", "80",
+		"-c" });
 	assertEquals(80, config.getPort());
 	assertFalse(config.isCacheEnabled());
     }

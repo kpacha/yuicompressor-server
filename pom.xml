@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.kpacha</groupId>
 	<artifactId>yuicompressor-server</artifactId>
-	<version>0.2.1-SNAPSHOT</version>
+	<version>0.2.2-SNAPSHOT</version>
 	<name>yui-compressor server</name>
 	<description>Standalone yui-compressor server</description>
 

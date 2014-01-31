@@ -15,7 +15,7 @@ import org.mozilla.javascript.EvaluatorException;
 import com.github.kpacha.yuicompressorserver.compressor.Compressor;
 import com.github.kpacha.yuicompressorserver.reporter.Reporter;
 import com.github.kpacha.yuicompressorserver.reporter.YuiErrorReporter;
-import com.github.kpacha.yuicompressorserver.utils.BufferedContentHasher;
+import com.github.kpacha.yuicompressorserver.utils.Md5Hasher;
 
 /**
  * The yuicompressor jetty-based servlet handler
@@ -29,7 +29,7 @@ public class YuiCompressorHandler extends AbstractHandler {
     private static Logger logger = Logger.getLogger(YuiCompressorHandler.class);
 
     private Compressor compressor;
-    private BufferedContentHasher hasher;
+    private Md5Hasher hasher;
 
     /**
      * Default constructor.
@@ -38,7 +38,7 @@ public class YuiCompressorHandler extends AbstractHandler {
      * @param hasher
      */
     public YuiCompressorHandler(Compressor compressor,
-	    BufferedContentHasher hasher) {
+	    Md5Hasher hasher) {
 	this.compressor = compressor;
 	this.hasher = hasher;
     }

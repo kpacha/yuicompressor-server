@@ -9,7 +9,7 @@ import org.mozilla.javascript.EvaluatorException;
 
 import com.github.kpacha.yuicompressorserver.adapter.UnknownContentTypeException;
 import com.github.kpacha.yuicompressorserver.reporter.Reporter;
-import com.github.kpacha.yuicompressorserver.utils.BufferedContentHasher;
+import com.github.kpacha.yuicompressorserver.utils.Md5Hasher;
 
 /**
  * In-memory cache for compression requests
@@ -20,7 +20,7 @@ public class CachedCompressor extends Compressor {
 
     private Compressor actualCompressor;
     private Cache cache;
-    private BufferedContentHasher hasher;
+    private Md5Hasher hasher;
 
     /**
      * The default constructor
@@ -30,7 +30,7 @@ public class CachedCompressor extends Compressor {
      * @param cache
      */
     public CachedCompressor(Compressor actualCompressor,
-	    BufferedContentHasher bufferedContentHasher, Cache cache) {
+	    Md5Hasher bufferedContentHasher, Cache cache) {
 	this.actualCompressor = actualCompressor;
 	this.cache = cache;
 	hasher = bufferedContentHasher;

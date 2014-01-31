@@ -21,7 +21,7 @@ Clone the project and install it!
 	$ cd yuicompressor-server
 	$ mvn install
 
-And, after testing the code, the yuicompressor-server-0.2.1-SNAPSHOT.jar should be on your local maven repo
+And, after testing the code, the yuicompressor-server-0.2.2-SNAPSHOT.jar should be on your local maven repo
 
 #Run with maven
 
@@ -41,14 +41,14 @@ So, let's build it for real, deploy it to an actual server and run it!
 	# ... your deployment process here ...
 
 	# start the yuicompressor service
-	$ java -jar yuicompressor-server-0.2.1-SNAPSHOT-jar-with-dependencies.jar [<PORT> [<ALGORITHM>]]
-
-Note the optional arguments!
-
-* `PORT` allows you to set the service port. Default value is `8080`
-* `ALGORITHM` allows you to set the hashing algorithm. Default: `SHA-1`
+	$ java -jar yuicompressor-server-0.2.2-SNAPSHOT-jar-with-dependencies.jar [-c] [-p <port>]
 
 And you already have a yuicompressor-server running!
+
+The options are:
+
+	-c         disable cache
+	-p <arg>   port (default 8080)
 
 #Usage
 
@@ -56,9 +56,9 @@ Just send your javascript and css files as a post request to your service.
 
 Simple demo with curl:
 
-	$ curl -H "Content-Type:text/css; charset=utf-8" -X POST -id 'a {}       c{ color=red;      }' http://localhost:8080/
+	$ curl -H "Content-Type:text/css; charset=utf-8" -X POST -i --data-binary 'a {}       c{ color=red;      }' http://localhost:8080/
 	# or
-	$ curl -H "Content-Type:text/css; charset=utf-8" -X POST -id @src/test/resources/background-position.css http://localhost:8080/
+	$ curl -H "Content-Type:text/css; charset=utf-8" -X POST -i --data-binary @src/test/resources/background-position.css http://localhost:8080/
 
 Do not forget to set the `Content-Type` header with the right charset or get ready to die a painful, lonely death!
 

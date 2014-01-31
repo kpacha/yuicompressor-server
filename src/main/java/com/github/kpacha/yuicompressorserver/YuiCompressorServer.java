@@ -12,7 +12,7 @@ import com.github.kpacha.yuicompressorserver.adapter.AdapterFactory;
 import com.github.kpacha.yuicompressorserver.compressor.CachedCompressor;
 import com.github.kpacha.yuicompressorserver.compressor.Compressor;
 import com.github.kpacha.yuicompressorserver.compressor.YuiCompressor;
-import com.github.kpacha.yuicompressorserver.utils.BufferedContentHasher;
+import com.github.kpacha.yuicompressorserver.utils.Md5Hasher;
 
 /**
  * The YuiCompressorServer starts a jetty server and registers a
@@ -31,7 +31,7 @@ public class YuiCompressorServer {
     private static Logger logger = Logger.getLogger(YuiCompressorServer.class);
 
     private Server server;
-    private BufferedContentHasher hasher;
+    private Md5Hasher hasher;
 
     /**
      * Main method of the standalone yuicompressor-server
@@ -51,7 +51,7 @@ public class YuiCompressorServer {
      * @throws Exception
      */
     public YuiCompressorServer(Configuration configuration) throws Exception {
-	hasher = new BufferedContentHasher(configuration.getAlgorithm());
+	hasher = new Md5Hasher();
 	server = new Server(configuration.getPort());
 	server.setHandler(new YuiCompressorHandler(
 		getCompressor(configuration), hasher));

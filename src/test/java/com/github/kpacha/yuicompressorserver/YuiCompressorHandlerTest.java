@@ -28,7 +28,7 @@ import org.mozilla.javascript.EvaluatorException;
 import com.github.kpacha.yuicompressorserver.adapter.UnknownContentTypeException;
 import com.github.kpacha.yuicompressorserver.compressor.Compressor;
 import com.github.kpacha.yuicompressorserver.reporter.YuiErrorReporter;
-import com.github.kpacha.yuicompressorserver.utils.BufferedContentHasher;
+import com.github.kpacha.yuicompressorserver.utils.Md5Hasher;
 
 public class YuiCompressorHandlerTest extends TestCase {
     private String contentType;
@@ -80,7 +80,7 @@ public class YuiCompressorHandlerTest extends TestCase {
 		(YuiErrorReporter) any());
 
 	YuiCompressorHandler handler = new YuiCompressorHandler(compressor,
-		mock(BufferedContentHasher.class));
+		mock(Md5Hasher.class));
 	handler.handle("/", mock(Request.class), mockRequest(), response);
 
 	verify(response).setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -97,7 +97,7 @@ public class YuiCompressorHandlerTest extends TestCase {
 			(YuiErrorReporter) any());
 
 	YuiCompressorHandler handler = new YuiCompressorHandler(compressor,
-		mock(BufferedContentHasher.class));
+		mock(Md5Hasher.class));
 	handler.handle("/", mock(Request.class), mockRequest(), response);
 
 	verify(response).setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -114,7 +114,7 @@ public class YuiCompressorHandlerTest extends TestCase {
 		.thenReturn(output);
 
 	YuiCompressorHandler handler = new YuiCompressorHandler(compressor,
-		new BufferedContentHasher("md5"));
+		new Md5Hasher());
 	handler.handle("/", mock(Request.class), mockRequest(), response);
 
 	verify(response).setStatus(HttpServletResponse.SC_OK);

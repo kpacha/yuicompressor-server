@@ -20,7 +20,7 @@ import org.mozilla.javascript.EvaluatorException;
 import com.github.kpacha.yuicompressorserver.adapter.UnknownContentTypeException;
 import com.github.kpacha.yuicompressorserver.reporter.Reporter;
 import com.github.kpacha.yuicompressorserver.reporter.YuiErrorReporter;
-import com.github.kpacha.yuicompressorserver.utils.BufferedContentHasher;
+import com.github.kpacha.yuicompressorserver.utils.Md5Hasher;
 
 public class CachedCompressorTest extends TestCase {
     private Compressor compressor;
@@ -31,12 +31,12 @@ public class CachedCompressorTest extends TestCase {
     private String output = "some nice compressed output";
     private Reporter reporter;
     private PrintWriter out;
-    private BufferedContentHasher hasher;
+    private Md5Hasher hasher;
     private CacheManager cacheManager;
 
     public void setUp() throws NoSuchAlgorithmException, IOException {
 	compressor = mock(Compressor.class);
-	hasher = mock(BufferedContentHasher.class);
+	hasher = mock(Md5Hasher.class);
 	when(hasher.getHash((String) any(), (String) any())).thenReturn(
 		"someHash");
 	cachedCompressor = new CachedCompressor(compressor, hasher,

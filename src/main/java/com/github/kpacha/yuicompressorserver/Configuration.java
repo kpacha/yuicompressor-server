@@ -9,17 +9,14 @@ import org.apache.log4j.Logger;
 
 public class Configuration {
     private static final int DEFAULT_PORT = 8080;
-    private static final String DEFAULT_ALGORITHM = "md5";
     private static Logger logger = Logger.getLogger(Configuration.class);
 
     private CommandLine cmd;
-    private String algorithm;
     private int port;
     private boolean cacheEnabled;
 
     public Configuration(String[] args) throws ParseException {
 	initCmdLine(args);
-	algorithm = initAlgorithm();
 	port = initPort();
 	cacheEnabled = initCacheEnabled();
     }
@@ -32,13 +29,10 @@ public class Configuration {
 	return port;
     }
 
-    public String getAlgorithm() {
-	return algorithm;
-    }
-
     private void initCmdLine(String[] args) throws ParseException {
 	CommandLineParser parser = new GnuParser();
-	cmd = parser.parse(getOptions(), args);
+	Options options = getOptions();
+	cmd = parser.parse(options, args);
     }
 
     private Options getOptions() {
@@ -46,18 +40,8 @@ public class Configuration {
 
 	options.addOption("p", true, "port (default 8080)");
 	options.addOption("c", false, "disable cache");
-	options.addOption("h", true, "hashing algorithm");
 
 	return options;
-    }
-
-    private String initAlgorithm() {
-	String hashAlgorithm = cmd.getOptionValue("h");
-	if (hashAlgorithm == null) {
-	    hashAlgorithm = DEFAULT_ALGORITHM;
-	}
-	logger.info("Selected hashing algorithm: " + hashAlgorithm);
-	return hashAlgorithm;
     }
 
     private int initPort() {
