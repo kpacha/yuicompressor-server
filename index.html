@@ -57,7 +57,7 @@ $ cd yuicompressor-server
 $ mvn install
 </code></pre>
 
-<p>And, after testing the code, the yuicompressor-server-0.2.0-SNAPSHOT.jar should be on your local maven repo</p>
+<p>And, after testing the code, the yuicompressor-server-0.2.2-SNAPSHOT.jar should be on your local maven repo</p>
 
 <h1>
 <a name="run-with-maven" class="anchor" href="#run-with-maven"><span class="octicon octicon-link"></span></a>Run with maven</h1>
@@ -80,19 +80,14 @@ $ mvn install
 # ... your deployment process here ...
 
 # start the yuicompressor service
-$ java -jar target/yuicompressor-server-0.2.0-SNAPSHOT-jar-with-dependencies.jar [&lt;PORT&gt; [&lt;ALGORITHM&gt;]]
+$ java -jar target/yuicompressor-server-0.2.1-SNAPSHOT-jar-with-dependencies.jar [-p &lt;PORT&gt;] [-c]
 </code></pre>
 
 <p>Note the optional arguments!</p>
 
-<ul>
-<li>
-<code>PORT</code> allows you to set the service port. Default value is <code>8080</code>
-</li>
-<li>
-<code>ALGORITHM</code> allows you to set the hashing algorithm. Default: <code>SHA-1</code>
-</li>
-</ul><p>And you already have a yuicompressor-server running!</p>
+<pre><code>-c         disable cache
+-p &lt;arg&gt;   port (default 8080)
+</code></pre><p>And you already have a yuicompressor-server running!</p>
 
 <h1>
 <a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h1>
@@ -101,9 +96,9 @@ $ java -jar target/yuicompressor-server-0.2.0-SNAPSHOT-jar-with-dependencies.jar
 
 <p>Simple demo with curl:</p>
 
-<pre><code>$ curl -H "Content-Type:text/css; charset=utf-8" -X POST -id 'a {}       c{ color=red;      }' http://localhost:8080/
+<pre><code>$ curl -H "Content-Type:text/css; charset=utf-8" -X POST -i --data-binary 'a {}       c{ color=red;      }' http://localhost:8080/
 # or
-$ curl -H "Content-Type:text/css; charset=utf-8" -X POST -id @src/test/resources/test.css http://localhost:8080/
+$ curl -H "Content-Type:text/css; charset=utf-8" -X POST -i --data-binary @src/test/resources/background-position.css http://localhost:8080/
 </code></pre>
 
 <p>Do not forget to set the <code>Content-Type</code> header with the right charset or get ready to die a painful, lonely death!</p>
