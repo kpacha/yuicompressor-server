@@ -12,17 +12,6 @@ import java.security.NoSuchAlgorithmException;
  */
 public class Md5Hasher {
     private static final String ALGORITHM = "md5";
-    private MessageDigest md;
-
-    /**
-     * The default constructor sets up the internal message digester with the
-     * md5 algorithm
-     * 
-     * @throws NoSuchAlgorithmException
-     */
-    public Md5Hasher() throws NoSuchAlgorithmException {
-	md = MessageDigest.getInstance(ALGORITHM);
-    }
 
     /**
      * Hash the received String
@@ -31,19 +20,21 @@ public class Md5Hasher {
      * @param charset
      * @return
      * @throws IOException
+     * @throws NoSuchAlgorithmException
      */
-    public String getHash(String in, String charset) throws IOException {
+    public String getHash(String in, String charset) throws IOException,
+	    NoSuchAlgorithmException {
 	return getDigest(in, charset);
     }
 
     private String getDigest(String message, String charset)
-	    throws UnsupportedEncodingException {
+	    throws UnsupportedEncodingException, NoSuchAlgorithmException {
 	return getDigest(message.getBytes(charset));
     }
 
     private String getDigest(byte[] message)
-	    throws UnsupportedEncodingException {
-	md.reset();
+	    throws UnsupportedEncodingException, NoSuchAlgorithmException {
+	MessageDigest md = MessageDigest.getInstance(ALGORITHM);
 	return byteArrayToString(md.digest(message));
     }
 

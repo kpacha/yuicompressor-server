@@ -1,7 +1,5 @@
 package com.github.kpacha.yuicompressorserver;
 
-import java.security.NoSuchAlgorithmException;
-
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheException;
 import net.sf.ehcache.CacheManager;
@@ -33,6 +31,7 @@ public class YuiCompressorServer {
      * Main method of the standalone yuicompressor-server
      * 
      * @param args
+     * @throws Exception
      */
     public static void main(String[] args) throws Exception {
 	YuiCompressorServer server = new YuiCompressorServer(new Configuration(
@@ -44,9 +43,8 @@ public class YuiCompressorServer {
      * Set up the server with all its dependencies
      * 
      * @param configuration
-     * @throws Exception
      */
-    public YuiCompressorServer(Configuration configuration) throws Exception {
+    public YuiCompressorServer(Configuration configuration) {
 	hasher = new Md5Hasher();
 	server = new Server(configuration.getPort());
 	server.setHandler(new YuiCompressorHandler(
@@ -63,8 +61,7 @@ public class YuiCompressorServer {
 	server.join();
     }
 
-    private Compressor getCompressor(Configuration configuration)
-	    throws NoSuchAlgorithmException {
+    private Compressor getCompressor(Configuration configuration) {
 	Compressor compressor = new YuiCompressor(new AdapterFactory());
 	if (configuration.isCacheEnabled()) {
 	    logger.debug("Init cache layer ...");

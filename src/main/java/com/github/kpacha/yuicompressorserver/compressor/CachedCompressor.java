@@ -1,10 +1,12 @@
 package com.github.kpacha.yuicompressorserver.compressor;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 
+import org.apache.log4j.Logger;
 import org.mozilla.javascript.EvaluatorException;
 
 import com.github.kpacha.yuicompressorserver.adapter.UnknownContentTypeException;
@@ -17,6 +19,7 @@ import com.github.kpacha.yuicompressorserver.utils.Md5Hasher;
  * @author kpacha
  */
 public class CachedCompressor extends Compressor {
+    private static Logger logger = Logger.getLogger(CachedCompressor.class);
 
     private Compressor actualCompressor;
     private Cache cache;
@@ -44,13 +47,31 @@ public class CachedCompressor extends Compressor {
     public String compress(String contentType, String charset, String in,
 	    Reporter reporter) throws EvaluatorException, IOException,
 	    UnknownContentTypeException {
+	try {
+	    return getCachedOrCompressedOutput(contentType, charset, in,
+		    reporter);
+	} catch (NoSuchAlgorithmException e) {
+	    return getCompressedResult(contentType, charset, in, reporter);
+	}
+    }
+
+    private String getCachedOrCompressedOutput(String contentType,
+	    String charset, String in, Reporter reporter) throws IOException,
+	    NoSuchAlgorithmException, UnknownContentTypeException {
 	String hash = hasher.getHash(in, charset);
 	Element element = cache.get(hash);
 	if (element == null) {
-	    cache.put(new Element(hash, actualCompressor.compress(contentType,
+	    cache.put(new Element(hash, getCompressedResult(contentType,
 		    charset, in, reporter)));
 	    element = cache.get(hash);
 	}
 	return (String) element.getObjectValue();
+    }
+
+    private String getCompressedResult(String contentType, String charset,
+	    String in, Reporter reporter) throws IOException,
+	    UnknownContentTypeException {
+	logger.debug("Delegating the compression");
+	return actualCompressor.compress(contentType, charset, in, reporter);
     }
 }

@@ -37,8 +37,7 @@ public class YuiCompressorHandler extends AbstractHandler {
      * @param compressor
      * @param hasher
      */
-    public YuiCompressorHandler(Compressor compressor,
-	    Md5Hasher hasher) {
+    public YuiCompressorHandler(Compressor compressor, Md5Hasher hasher) {
 	this.compressor = compressor;
 	this.hasher = hasher;
     }
