@@ -31,6 +31,7 @@ public class YuiCompressorHandler extends AbstractHandler {
 	private static final String INPUT_PARAMETER = "input";
 	private static Logger logger = Logger.getLogger(YuiCompressorHandler.class);
 	private static final String CHARSET = "UTF-8";
+	private static final String MD5_HEADER_NOT_SET = "Md5 header not setted in the header";
 
 	private Compressor compressor;
 	private Md5Hasher hasher;
@@ -61,18 +62,24 @@ public class YuiCompressorHandler extends AbstractHandler {
 		try {
 			String file = request.getParameter(FILES_PARAMETER);
 			String type = request.getParameter(TYPE_PARAMETER);
+			String input = request.getParameter(INPUT_PARAMETER);
 			logger.info("File received: " + file);
 			logger.info("Type: " + type);
 
+			checkIntegrity( hasher.getHash(input, CHARSET), request.getHeader(HttpHeader.CONTENT_MD5.asString()));
 			sendHeaders(request, response, type);
 
 			String compressedOutput = compressor.compress(type, CHARSET,
-					request.getParameter(INPUT_PARAMETER), reporter);
+					input, reporter);
 
 			response.setHeader(HttpHeader.CONTENT_MD5.asString(),
 					hasher.getHash(compressedOutput, CHARSET));
 			response.getWriter().write(compressedOutput);
 			response.flushBuffer();
+		} catch (IllegalArgumentException e) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			logger.warn(e.getMessage());
+			response.getWriter().print(e.getMessage());
 		} catch (EvaluatorException e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			logger.warn(e.getMessage());
@@ -81,9 +88,16 @@ public class YuiCompressorHandler extends AbstractHandler {
 		} catch (Exception e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.getWriter().print(
-					request.getParameter(FILES_PARAMETER) + " has failed;: "
+					request.getParameter(FILES_PARAMETER) + " has failed: "
 							+ reporter.getReport() + e.getMessage());
 			logger.warn(e.getMessage());
+		}
+	}
+
+	private void checkIntegrity(String md5_input, String md5Header) {
+		if( !md5_input.equals(md5Header))
+		{
+			throw new IllegalArgumentException(MD5_HEADER_NOT_SET);
 		}
 	}
 

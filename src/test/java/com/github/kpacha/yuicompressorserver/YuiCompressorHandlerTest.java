@@ -35,6 +35,7 @@ public class YuiCompressorHandlerTest extends TestCase {
 	private String input;
 	private String type;
 	private String files;
+	private String md5_hash;
 
 	public void setUp() throws IOException {
 		contentType = "text/javascript";
@@ -45,11 +46,21 @@ public class YuiCompressorHandlerTest extends TestCase {
 		input = "some uncompressed input";
 		type = "js";
 		files = "i18n.js";
+		md5_hash = "19223c102370329f6ccc83e5c53d05f4";
 	}
 
 	public void testHandleGetOk() throws IOException, ServletException,
 			UnknownContentTypeException, NoSuchAlgorithmException {
 		httpMethod = "GET";
+		doTestHandleOk();
+		verifyCacheHeaders();
+	}
+
+	public void testHandleCssOk() throws IOException, ServletException,
+			UnknownContentTypeException, NoSuchAlgorithmException {
+		httpMethod = "GET";
+		type = "css";
+		contentType = "text/css";
 		doTestHandleOk();
 		verifyCacheHeaders();
 	}
@@ -74,8 +85,7 @@ public class YuiCompressorHandlerTest extends TestCase {
 		String message = "some exception message";
 		Compressor compressor = mock(Compressor.class);
 		doThrow(new EvaluatorException(message)).when(compressor).compress(
-				eq(type), eq(encoding), eq(input),
-				(YuiErrorReporter) any());
+				eq(type), eq(encoding), eq(input), (YuiErrorReporter) any());
 
 		YuiCompressorHandler handler = new YuiCompressorHandler(compressor,
 				mock(Md5Hasher.class));
@@ -101,18 +111,40 @@ public class YuiCompressorHandlerTest extends TestCase {
 		verify(response).setStatus(HttpServletResponse.SC_BAD_REQUEST);
 	}
 
+	public void testMd5HeaderNotSetBadParameterIsShown() throws IOException,
+			ServletException, UnknownContentTypeException,
+			NoSuchAlgorithmException {
+		httpMethod = "GET";
+		String message = "Md5 header not setted in the header";
+		Compressor compressor = mock(Compressor.class);
+		HttpServletRequest request = mockRequest();
+		when(request.getHeader(HttpHeader.CONTENT_MD5.asString())).thenReturn(null);
+
+		YuiCompressorHandler handler = new YuiCompressorHandler(compressor,
+				getHasher());
+		handler.handle("/", mock(Request.class), request, response);
+
+		verify(response).setStatus(HttpServletResponse.SC_BAD_REQUEST);
+		verify(response.getWriter()).print(message);
+	}
+
+	private Md5Hasher getHasher() throws IOException, NoSuchAlgorithmException {
+		Md5Hasher hasher = mock(Md5Hasher.class);
+		when(hasher.getHash(input, encoding)).thenReturn(md5_hash);
+		return hasher;
+	}
+
 	private void doTestHandleOk() throws IOException, ServletException,
 			UnknownContentTypeException, NoSuchAlgorithmException {
 		String output = "some compressed output";
 
 		Compressor compressor = mock(Compressor.class);
 		when(
-				compressor.compress((String) any(), (String) any(),
-						eq(input), (YuiErrorReporter) any()))
-				.thenReturn(output);
+				compressor.compress((String) any(), (String) any(), eq(input),
+						(YuiErrorReporter) any())).thenReturn(output);
 
 		YuiCompressorHandler handler = new YuiCompressorHandler(compressor,
-				new Md5Hasher());
+				getHasher());
 		handler.handle("/", mock(Request.class), mockRequest(), response);
 
 		verify(response).setStatus(HttpServletResponse.SC_OK);
@@ -134,9 +166,10 @@ public class YuiCompressorHandlerTest extends TestCase {
 		when(request.getContentType()).thenReturn(contentType);
 		when(request.getCharacterEncoding()).thenReturn(encoding);
 		when(request.getMethod()).thenReturn(httpMethod);
-		when(request.getParameter("type")).thenReturn( type );
-		when(request.getParameter("files")).thenReturn( files);
-		when(request.getParameter("input")).thenReturn( input );
+		when(request.getParameter("type")).thenReturn(type);
+		when(request.getParameter("files")).thenReturn(files);
+		when(request.getParameter("input")).thenReturn(input);
+		when(request.getHeader(HttpHeader.CONTENT_MD5.asString())).thenReturn(md5_hash);
 		return request;
 	}
 }
