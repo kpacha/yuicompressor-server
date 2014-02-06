@@ -26,73 +26,92 @@ import com.github.kpacha.yuicompressorserver.utils.Md5Hasher;
  * @author kpacha
  */
 public class YuiCompressorHandler extends AbstractHandler {
-    private static Logger logger = Logger.getLogger(YuiCompressorHandler.class);
+	private static final String FILES_PARAMETER = "files";
+	private static final String TYPE_PARAMETER = "type";
+	private static final String INPUT_PARAMETER = "input";
+	private static Logger logger = Logger.getLogger(YuiCompressorHandler.class);
+	private static final String CHARSET = "UTF-8";
 
-    private Compressor compressor;
-    private Md5Hasher hasher;
+	private Compressor compressor;
+	private Md5Hasher hasher;
 
-    /**
-     * Default constructor.
-     * 
-     * @param compressor
-     * @param hasher
-     */
-    public YuiCompressorHandler(Compressor compressor, Md5Hasher hasher) {
-	this.compressor = compressor;
-	this.hasher = hasher;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jetty.server.Handler#handle(java.lang.String,
-     * org.eclipse.jetty.server.Request, javax.servlet.http.HttpServletRequest,
-     * javax.servlet.http.HttpServletResponse)
-     */
-    public void handle(String target, Request baseRequest,
-	    HttpServletRequest request, HttpServletResponse response)
-	    throws IOException, ServletException {
-	baseRequest.setHandled(true);
-	Reporter reporter = new YuiErrorReporter();
-	try {
-	    sendHeaders(request, response);
-	    String charset = request.getCharacterEncoding();
-	    String compressedOutput = compressor.compress(
-		    request.getContentType(), charset, request.getReader(),
-		    reporter);
-	    response.setHeader(HttpHeader.CONTENT_MD5.asString(),
-		    hasher.getHash(compressedOutput, charset));
-	    response.getWriter().write(compressedOutput);
-	    response.flushBuffer();
-	} catch (EvaluatorException e) {
-	    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-	    response.getWriter().print(reporter.getReport());
-	    logger.warn(e.getMessage());
-	    logger.warn(reporter.getReport());
-	} catch (Exception e) {
-	    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-	    response.getWriter().print(e.getMessage());
-	    logger.warn(e.getMessage());
+	/**
+	 * Default constructor.
+	 * 
+	 * @param compressor
+	 * @param hasher
+	 */
+	public YuiCompressorHandler(Compressor compressor, Md5Hasher hasher) {
+		this.compressor = compressor;
+		this.hasher = hasher;
 	}
-    }
 
-    private void sendHeaders(HttpServletRequest request,
-	    HttpServletResponse response) {
-	response.setStatus(HttpServletResponse.SC_OK);
-	response.setCharacterEncoding(request.getCharacterEncoding());
-	response.setContentType(request.getContentType());
-	long now = System.currentTimeMillis();
-	response.setDateHeader(HttpHeader.DATE.asString(), now);
-	if (isCacheable(request)) {
-	    response.setHeader(HttpHeader.CACHE_CONTROL.asString(),
-		    "public, max-age=31536000");
-	    response.setDateHeader(HttpHeader.EXPIRES.asString(),
-		    now + 31536000000L);
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.jetty.server.Handler#handle(java.lang.String,
+	 * org.eclipse.jetty.server.Request, javax.servlet.http.HttpServletRequest,
+	 * javax.servlet.http.HttpServletResponse)
+	 */
+	public void handle(String target, Request baseRequest,
+			HttpServletRequest request, HttpServletResponse response)
+			throws IOException, ServletException {
+		baseRequest.setHandled(true);
+		Reporter reporter = new YuiErrorReporter();
+		try {
+			String file = request.getParameter(FILES_PARAMETER);
+			String type = request.getParameter(TYPE_PARAMETER);
+			logger.info("File received: " + file);
+			logger.info("Type: " + type);
+
+			sendHeaders(request, response, type);
+
+			String compressedOutput = compressor.compress(type, CHARSET,
+					request.getParameter(INPUT_PARAMETER), reporter);
+
+			response.setHeader(HttpHeader.CONTENT_MD5.asString(),
+					hasher.getHash(compressedOutput, CHARSET));
+			response.getWriter().write(compressedOutput);
+			response.flushBuffer();
+		} catch (EvaluatorException e) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			logger.warn(e.getMessage());
+			logger.warn(reporter.getReport());
+			response.getWriter().print(reporter.getReport());
+		} catch (Exception e) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			response.getWriter().print(
+					request.getParameter(FILES_PARAMETER) + " has failed;: "
+							+ reporter.getReport() + e.getMessage());
+			logger.warn(e.getMessage());
+		}
 	}
-    }
 
-    private boolean isCacheable(HttpServletRequest request) {
-	return request.getMethod().equals("GET")
-		|| request.getMethod().equals("POST");
-    }
+	private void sendHeaders(HttpServletRequest request,
+			HttpServletResponse response, String type) {
+		response.setStatus(HttpServletResponse.SC_OK);
+		response.setCharacterEncoding(CHARSET);
+		response.setContentType(getContentType(type));
+		long now = System.currentTimeMillis();
+		response.setDateHeader(HttpHeader.DATE.asString(), now);
+		if (isCacheable(request)) {
+			response.setHeader(HttpHeader.CACHE_CONTROL.asString(),
+					"public, max-age=31536000");
+			response.setDateHeader(HttpHeader.EXPIRES.asString(),
+					now + 31536000000L);
+		}
+	}
+
+	private String getContentType(String type) {
+		if (type.equals("js")) {
+			type = "javascript";
+		}
+
+		return "text/" + type;
+	}
+
+	private boolean isCacheable(HttpServletRequest request) {
+		return request.getMethod().equals("GET")
+				|| request.getMethod().equals("POST");
+	}
 }

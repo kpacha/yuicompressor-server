@@ -30,7 +30,6 @@ public class CachedCompressorTest extends TestCase {
     private String input = "some uncompressed input";
     private String output = "some nice compressed output";
     private Reporter reporter;
-    private PrintWriter out;
     private Md5Hasher hasher;
     private CacheManager cacheManager;
 
@@ -43,7 +42,7 @@ public class CachedCompressorTest extends TestCase {
 		getFreshCache());
 	expectedContentType = "some-content-type";
 	reporter = new YuiErrorReporter();
-	out = new PrintWriter(new StringWriter());
+	new PrintWriter(new StringWriter());
     }
 
     public void tearDown() {

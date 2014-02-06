@@ -12,15 +12,15 @@ import com.github.kpacha.yuicompressorserver.reporter.Reporter;
  */
 public class AdapterFactory {
 
-    private static final String CSS = "text/css";
-    private static final String JS = "text/javascript";
+    private static final String CSS = "css";
+    private static final String JS = "js";
 
     public CompressorAdapter getCompressorByContentType(String contentType,
 	    BufferedReader in, Reporter reporter) throws IOException,
 	    UnknownContentTypeException {
-	if (contentType.startsWith(CSS)) {
+	if (contentType.equals(CSS)) {
 	    return new CssCompressorAdapter(in);
-	} else if (contentType.startsWith(JS)) {
+	} else if (contentType.equals(JS)) {
 	    return new JavaScriptCompressorAdapter(in, reporter);
 	}
 	throw new UnknownContentTypeException(contentType);

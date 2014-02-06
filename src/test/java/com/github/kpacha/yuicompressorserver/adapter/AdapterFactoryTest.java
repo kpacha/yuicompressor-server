@@ -31,7 +31,7 @@ public class AdapterFactoryTest extends TestCase {
 		.thenReturn(-1);
 	assertEquals(
 		CssCompressorAdapter.class,
-		adapter.getCompressorByContentType("text/css", bufferedReader,
+		adapter.getCompressorByContentType("css", bufferedReader,
 			reporter).getClass());
     }
 
@@ -42,7 +42,7 @@ public class AdapterFactoryTest extends TestCase {
 		.thenReturn(Character.getNumericValue('}')).thenReturn(-1);
 	assertEquals(
 		JavaScriptCompressorAdapter.class,
-		adapter.getCompressorByContentType("text/javascript",
+		adapter.getCompressorByContentType("js",
 			bufferedReader, reporter).getClass());
     }
 

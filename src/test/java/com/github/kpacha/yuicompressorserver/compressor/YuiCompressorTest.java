@@ -6,9 +6,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Writer;
 
 import junit.framework.TestCase;
@@ -45,18 +43,6 @@ public class YuiCompressorTest extends TestCase {
 
 	checkCompressedOutput(compressor.compress(expectedContentType, "utf-8",
 		tokenToPass, reporter));
-    }
-
-    public void testGetBufferedReaderContent() throws EvaluatorException,
-	    IOException, UnknownContentTypeException {
-	BufferedReader bufferedReader = new BufferedReader(
-		new InputStreamReader(new ByteArrayInputStream(
-			tokenToPass.getBytes())));
-
-	YuiCompressor compressor = new YuiCompressor(adapterFactory);
-
-	checkCompressedOutput(compressor.compress(expectedContentType, "utf-8",
-		bufferedReader, reporter));
     }
 
     private void checkCompressedOutput(String compressedOutput) {
