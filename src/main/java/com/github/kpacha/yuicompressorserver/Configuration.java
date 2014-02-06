@@ -9,7 +9,6 @@ import org.apache.log4j.Logger;
 
 public class Configuration {
 	private static final int DEFAULT_PORT = 8080;
-	private static final String DEFAULT_ALGORITHM = "md5";
 	private static final int DEFAULT_MAX_FORM_SIZE = 1024000;
 	private static Logger logger = Logger.getLogger(Configuration.class);
 
@@ -48,7 +47,6 @@ public class Configuration {
 
 		options.addOption("p", true, "port (default 8080)");
 		options.addOption("c", false, "enable cache");
-		options.addOption("h", true, "hashing algorithm");
 		options.addOption("m", true, "max form size");
 
 		return options;
