@@ -80,22 +80,22 @@ public class YuiCompressorHandlerTest extends TestCase {
 	}
 
 	public void testHandleEvaluatorException() throws IOException,
-			ServletException, UnknownContentTypeException {
+			ServletException, UnknownContentTypeException, NoSuchAlgorithmException {
 		httpMethod = "GET";
 		String message = "some exception message";
 		Compressor compressor = mock(Compressor.class);
-		doThrow(new EvaluatorException(message)).when(compressor).compress(
-				eq(type), eq(encoding), eq(input), (YuiErrorReporter) any());
+		when(compressor.compress(
+				(String) any(), (String) any(), (String) any(), (YuiErrorReporter) any())).thenThrow(new EvaluatorException(message));
 
 		YuiCompressorHandler handler = new YuiCompressorHandler(compressor,
-				mock(Md5Hasher.class));
+				getHasher());
 		handler.handle("/", mock(Request.class), mockRequest(), response);
 
 		verify(response).setStatus(HttpServletResponse.SC_BAD_REQUEST);
 	}
 
 	public void testHandleContentTypeException() throws IOException,
-			ServletException, UnknownContentTypeException {
+			ServletException, UnknownContentTypeException, NoSuchAlgorithmException {
 		httpMethod = "GET";
 		type = "unknown";
 		String message = "some exception message";
@@ -105,7 +105,7 @@ public class YuiCompressorHandlerTest extends TestCase {
 						(YuiErrorReporter) any());
 
 		YuiCompressorHandler handler = new YuiCompressorHandler(compressor,
-				mock(Md5Hasher.class));
+				getHasher());
 		handler.handle("/", mock(Request.class), mockRequest(), response);
 
 		verify(response).setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -115,7 +115,7 @@ public class YuiCompressorHandlerTest extends TestCase {
 			ServletException, UnknownContentTypeException,
 			NoSuchAlgorithmException {
 		httpMethod = "GET";
-		String message = "Md5 header not setted in the header";
+		String message = files + " has failed: Md5 header not setted in the header";
 		Compressor compressor = mock(Compressor.class);
 		HttpServletRequest request = mockRequest();
 		when(request.getHeader(HttpHeader.CONTENT_MD5.asString())).thenReturn(null);
@@ -126,6 +126,23 @@ public class YuiCompressorHandlerTest extends TestCase {
 
 		verify(response).setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		verify(response.getWriter()).print(message);
+	}
+
+	public void testMd5HeaderNotConsistentBadParameterIsShown() throws IOException,
+			ServletException, UnknownContentTypeException,
+			NoSuchAlgorithmException {
+		httpMethod = "GET";
+		String message = files + " has failed: Md5 header is not consistent";
+		Compressor compressor = mock(Compressor.class);
+		HttpServletRequest request = mockRequest();
+		when(request.getHeader(HttpHeader.CONTENT_MD5.asString())).thenReturn("badmd5");
+
+		YuiCompressorHandler handler = new YuiCompressorHandler(compressor,
+				getHasher());
+		handler.handle("/", mock(Request.class), request, response);
+
+		verify(response).setStatus(HttpServletResponse.SC_BAD_REQUEST);
+		verify(response.getWriter()).print( message );
 	}
 
 	private Md5Hasher getHasher() throws IOException, NoSuchAlgorithmException {
