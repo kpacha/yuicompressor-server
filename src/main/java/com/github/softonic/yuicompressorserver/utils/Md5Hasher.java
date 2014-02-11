@@ -1,4 +1,4 @@
-package com.github.kpacha.yuicompressorserver.utils;
+package com.github.softonic.yuicompressorserver.utils;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;

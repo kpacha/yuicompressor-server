@@ -13,10 +13,11 @@ import junit.framework.TestCase;
 
 import org.mozilla.javascript.EvaluatorException;
 
-import com.github.kpacha.yuicompressorserver.adapter.AdapterFactory;
-import com.github.kpacha.yuicompressorserver.adapter.CompressorAdapter;
-import com.github.kpacha.yuicompressorserver.adapter.UnknownContentTypeException;
-import com.github.kpacha.yuicompressorserver.reporter.YuiErrorReporter;
+import com.github.softonic.yuicompressorserver.adapter.AdapterFactory;
+import com.github.softonic.yuicompressorserver.adapter.CompressorAdapter;
+import com.github.softonic.yuicompressorserver.adapter.UnknownContentTypeException;
+import com.github.softonic.yuicompressorserver.compressor.YuiCompressor;
+import com.github.softonic.yuicompressorserver.reporter.YuiErrorReporter;
 
 public class YuiCompressorTest extends TestCase {
 

@@ -1,4 +1,4 @@
-package com.github.kpacha.yuicompressorserver.adapter;
+package com.github.softonic.yuicompressorserver.adapter;
 
 public class UnknownContentTypeException extends Exception {
 

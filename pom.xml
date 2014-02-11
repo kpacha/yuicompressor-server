@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.github.kpacha</groupId>
+	<groupId>com.github.softonic</groupId>
 	<artifactId>yuicompressor-server</artifactId>
 	<version>__VERSION__</version>
 	<name>yui-compressor server</name>
@@ -92,7 +92,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<mainClass>com.github.kpacha.yuicompressorserver.YuiCompressorServer</mainClass>
+					<mainClass>com.github.softonic.yuicompressorserver.YuiCompressorServer</mainClass>
 				</configuration>
 			</plugin>
 
@@ -105,7 +105,7 @@
 					</descriptorRefs>
 					<archive>
 						<manifest>
-							<mainClass>com.github.kpacha.yuicompressorserver.YuiCompressorServer</mainClass>
+							<mainClass>com.github.softonic.yuicompressorserver.YuiCompressorServer</mainClass>
 						</manifest>
 					</archive>
 				</configuration>

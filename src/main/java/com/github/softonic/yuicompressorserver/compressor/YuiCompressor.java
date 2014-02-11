@@ -1,4 +1,4 @@
-package com.github.kpacha.yuicompressorserver.compressor;
+package com.github.softonic.yuicompressorserver.compressor;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -8,10 +8,10 @@ import java.io.StringWriter;
 
 import org.mozilla.javascript.EvaluatorException;
 
-import com.github.kpacha.yuicompressorserver.adapter.AdapterFactory;
-import com.github.kpacha.yuicompressorserver.adapter.CompressorAdapter;
-import com.github.kpacha.yuicompressorserver.adapter.UnknownContentTypeException;
-import com.github.kpacha.yuicompressorserver.reporter.Reporter;
+import com.github.softonic.yuicompressorserver.adapter.AdapterFactory;
+import com.github.softonic.yuicompressorserver.adapter.CompressorAdapter;
+import com.github.softonic.yuicompressorserver.adapter.UnknownContentTypeException;
+import com.github.softonic.yuicompressorserver.reporter.Reporter;
 
 /**
  * Proxy for the compression adapters

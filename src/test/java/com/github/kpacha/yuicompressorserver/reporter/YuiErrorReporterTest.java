@@ -4,6 +4,8 @@ import junit.framework.TestCase;
 
 import org.mozilla.javascript.EvaluatorException;
 
+import com.github.softonic.yuicompressorserver.reporter.YuiErrorReporter;
+
 public class YuiErrorReporterTest extends TestCase {
 
     private YuiErrorReporter reporter;

@@ -1,4 +1,4 @@
-package com.github.kpacha.yuicompressorserver;
+package com.github.softonic.yuicompressorserver;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;

@@ -1,6 +1,10 @@
 package com.github.kpacha.yuicompressorserver;
 
 import static org.mockito.Mockito.mock;
+
+import com.github.softonic.yuicompressorserver.Configuration;
+import com.github.softonic.yuicompressorserver.YuiCompressorServer;
+
 import junit.framework.TestCase;
 import static org.mockito.Mockito.when;
 

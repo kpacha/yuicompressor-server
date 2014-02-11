@@ -1,11 +1,11 @@
-package com.github.kpacha.yuicompressorserver.compressor;
+package com.github.softonic.yuicompressorserver.compressor;
 
 import java.io.IOException;
 
 import org.mozilla.javascript.EvaluatorException;
 
-import com.github.kpacha.yuicompressorserver.adapter.UnknownContentTypeException;
-import com.github.kpacha.yuicompressorserver.reporter.Reporter;
+import com.github.softonic.yuicompressorserver.adapter.UnknownContentTypeException;
+import com.github.softonic.yuicompressorserver.reporter.Reporter;
 
 /**
  * The compressor interface
