@@ -1,6 +1,7 @@
 package com.github.softonic.yuicompressorserver;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -12,6 +13,7 @@ import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.mozilla.javascript.EvaluatorException;
 
+import com.github.softonic.yuicompressorserver.adapter.UnknownContentTypeException;
 import com.github.softonic.yuicompressorserver.compressor.Compressor;
 import com.github.softonic.yuicompressorserver.reporter.Reporter;
 import com.github.softonic.yuicompressorserver.reporter.YuiErrorReporter;
@@ -31,6 +33,8 @@ public class YuiCompressorHandler extends AbstractHandler {
 	private static final String INPUT_PARAMETER = "input";
 	private static Logger logger = Logger.getLogger(YuiCompressorHandler.class);
 	private static final String CHARSET = "UTF-8";
+	private static final String MD5_HEADER_NOT_SET = "Md5 header not setted in the header";
+	private static final String MD5_HEADER_NOT_EQUAL = "Md5 header is not consistent";
 
 	private Compressor compressor;
 	private Md5Hasher hasher;
@@ -59,31 +63,68 @@ public class YuiCompressorHandler extends AbstractHandler {
 		baseRequest.setHandled(true);
 		Reporter reporter = new YuiErrorReporter();
 		try {
-			String file = request.getParameter(FILES_PARAMETER);
-			String type = request.getParameter(TYPE_PARAMETER);
-			logger.info("File received: " + file);
-			logger.info("Type: " + type);
-
-			sendHeaders(request, response, type);
-
-			String compressedOutput = compressor.compress(type, CHARSET,
-					request.getParameter(INPUT_PARAMETER), reporter);
-
-			response.setHeader(HttpHeader.CONTENT_MD5.asString(),
-					hasher.getHash(compressedOutput, CHARSET));
-			response.getWriter().write(compressedOutput);
-			response.flushBuffer();
+			doHandle(request, response, reporter);
+		} catch (IllegalArgumentException e) {
+			handleException(request, response, e);
 		} catch (EvaluatorException e) {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			logger.warn(e.getMessage());
-			logger.warn(reporter.getReport());
-			response.getWriter().print(reporter.getReport());
+			handleException(request, response, e, reporter);
 		} catch (Exception e) {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			response.getWriter().print(
-					request.getParameter(FILES_PARAMETER) + " has failed;: "
-							+ reporter.getReport() + e.getMessage());
-			logger.warn(e.getMessage());
+			handleException(request, response, e);
+		}
+	}
+
+	private void handleException(HttpServletRequest request,
+			HttpServletResponse response, Exception e, Reporter reporter)
+			throws IOException {
+		handleException(request, response, e);
+		logger.warn(reporter.getReport());
+		response.getWriter().print(reporter.getReport());
+	}
+
+	private void handleException(HttpServletRequest request,
+			HttpServletResponse response, Exception e) throws IOException {
+		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+		response.getWriter().print(
+				request.getParameter(FILES_PARAMETER) + " has failed: "
+						+ e.getMessage());
+		logger.warn(e.getMessage());
+	}
+
+	private void doHandle(HttpServletRequest request,
+			HttpServletResponse response, Reporter reporter)
+			throws IOException, NoSuchAlgorithmException,
+			UnknownContentTypeException {
+		String file = request.getParameter(FILES_PARAMETER);
+		String type = request.getParameter(TYPE_PARAMETER);
+		String input = request.getParameter(INPUT_PARAMETER);
+		logger.info("File received: " + file);
+		logger.info("Type: " + type);
+
+		checkIntegrity(hasher.getHash(input, CHARSET),
+				request.getHeader(HttpHeader.CONTENT_MD5.asString()));
+		
+		String compressedOutput = compressor.compress(type, CHARSET, input,
+				reporter);
+		sendHeaders(request, response, type);
+		setResponse(response, compressedOutput);
+	}
+
+	private void setResponse(HttpServletResponse response,
+			String compressedOutput) throws IOException,
+			NoSuchAlgorithmException {
+		response.setHeader(HttpHeader.CONTENT_MD5.asString(),
+				hasher.getHash(compressedOutput, CHARSET));
+		response.getWriter().write(compressedOutput);
+		response.flushBuffer();
+	}
+
+	private void checkIntegrity(String md5_input, String md5Header) {
+		if (md5Header == null) {
+			throw new IllegalArgumentException(MD5_HEADER_NOT_SET);
+		} else if (!md5Header.equals(md5_input)) {
+			logger.info(md5_input + " is not equals to header-md5: "
+					+ md5Header);
+			throw new IllegalArgumentException(MD5_HEADER_NOT_EQUAL);
 		}
 	}
 
