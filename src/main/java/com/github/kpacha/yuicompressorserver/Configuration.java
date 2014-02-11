@@ -47,7 +47,7 @@ public class Configuration {
 
 		options.addOption("p", true, "port (default 8080)");
 		options.addOption("c", false, "enable cache");
-		options.addOption("m", true, "max form size");
+		options.addOption("m", true, "max form size (default 1024000 bytes)");
 
 		return options;
 	}

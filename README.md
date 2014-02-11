@@ -17,7 +17,7 @@ Powered by [jetty](http://www.eclipse.org/jetty/), [ehcache](http://ehcache.org/
 
 Clone the project and install it!
 
-	$ git clone https://github.com/kpacha/yuicompressor-server.git
+	$ git clone https://github.com/softonic/yuicompressor-server.git
 	$ cd yuicompressor-server
 	$ mvn install
 
@@ -41,14 +41,15 @@ So, let's build it for real, deploy it to an actual server and run it!
 	# ... your deployment process here ...
 
 	# start the yuicompressor service
-	$ java -jar yuicompressor-server-0.2.2-SNAPSHOT-jar-with-dependencies.jar [-c] [-p <port>]
+	$ java -jar yuicompressor-server-__VERSION__-full.jar [-p <port>] [-c] [-m <max_input_size>]
 
 And you already have a yuicompressor-server running!
 
 The options are:
 
-	-c         disable cache
 	-p <arg>   port (default 8080)
+	-c         enable cache
+	-m <arg>   max input size (default 1024000 bytes)
 
 #Usage
 
@@ -56,9 +57,9 @@ Just send your javascript and css files as a post request to your service.
 
 Simple demo with curl:
 
-	$ curl -X POST -i -F "type=css" -F "files="main.css" -F "input=a {}       c{ color=red;      }" http://localhost:8080/
+	$ curl --data-urlencode "type=css" --data-urlencode "files=main.css" --data-urlencode "input=a {}       c{ color=red;      }" http://localhost:8080/
 	# or
-	$ curl -X POST -i -F "type=css" -F "files="main.css" -F "input<src/test/resources/background-position.css" http://localhost:8080/
+	$ curl --data-urlencode "type=js" --data-urlencode "files=main.js" --data-urlencode "input@main.js" http://localhost:8080/
 
 #Why?
 

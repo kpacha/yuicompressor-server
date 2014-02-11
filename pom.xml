@@ -17,7 +17,7 @@
 		<slf4j-log4j12.version>1.7.5</slf4j-log4j12.version>
 		<maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
 		<jdk.version>1.7</jdk.version>
-		<version>0.0.2</version>
+		<version>0.2.3</version>
 	</properties>
 
 	<dependencies>
@@ -101,7 +101,7 @@
 				<version>2.4</version>
 				<configuration>
 					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
+						<descriptorRef>full</descriptorRef>
 					</descriptorRefs>
 					<archive>
 						<manifest>
