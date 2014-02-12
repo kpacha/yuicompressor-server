@@ -54,15 +54,16 @@ The options are:
 #Usage
 
 Just send your javascript and css files as a post request to your service.
+The server checks the integrity of the request using the Content-MD5 header, so you need to add this header with the MD5 of the file sent.
 
 Simple demo with curl:
 
-	$ curl --data-urlencode "type=css" --data-urlencode "files=main.css" --data-urlencode "input=a {}       c{ color=red;      }" http://localhost:8080/
+	$ curl -H "Content-MD5: acf0ae0101e6762933ee7036297851fd" --data-urlencode "type=css" --data-urlencode "files=main.css" --data-urlencode "input=a {}       c{ color=red;      }" http://localhost:8080/
 	# or
-	$ curl --data-urlencode "type=js" --data-urlencode "files=main.js" --data-urlencode "input@main.js" http://localhost:8080/
+	$ curl -H "Content-MD5: <md5_of_file_sended>" --data-urlencode "type=js" --data-urlencode "files=main.js" --data-urlencode "input@main.js" http://localhost:8080/
 
 #Why?
 
-Supose you have several hosts where you have to compress your javascript and css files. Why would you spend so much time doing the same operation again and again? And are your files different from one host to another or are they almost the same? How often do you deploy? Just take the DRY pattern to the next abstraction level and delegate that process to a dedicated service!
+Suppose you have several hosts where you have to compress your javascript and css files. Why would you spend so much time doing the same operation again and again? And are your files different from one host to another or are they almost the same? How often do you deploy? Just take the DRY pattern to the next abstraction level and delegate that process to a dedicated service!
 
 Was that enough?
