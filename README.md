@@ -60,7 +60,7 @@ Simple demo with curl:
 
 	$ curl -H "Content-MD5: acf0ae0101e6762933ee7036297851fd" --data-urlencode "type=css" --data-urlencode "files=main.css" --data-urlencode "input=a {}       c{ color=red;      }" http://localhost:8080/
 	# or
-	$ curl -H "Content-MD5: <md5_of_file_sended>" --data-urlencode "type=js" --data-urlencode "files=main.js" --data-urlencode "input@main.js" http://localhost:8080/
+	$ curl -H "Content-MD5: <md5_of_file_sent>" --data-urlencode "type=js" --data-urlencode "files=main.js" --data-urlencode "input@main.js" http://localhost:8080/
 
 #Why?
 
