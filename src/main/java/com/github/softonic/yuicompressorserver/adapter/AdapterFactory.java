@@ -1,9 +1,9 @@
-package com.github.kpacha.yuicompressorserver.adapter;
+package com.github.softonic.yuicompressorserver.adapter;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 
-import com.github.kpacha.yuicompressorserver.reporter.Reporter;
+import com.github.softonic.yuicompressorserver.reporter.Reporter;
 
 /**
  * Simple factory for the compressor adapter package

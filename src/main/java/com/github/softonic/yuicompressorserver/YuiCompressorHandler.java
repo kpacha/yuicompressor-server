@@ -1,4 +1,4 @@
-package com.github.kpacha.yuicompressorserver;
+package com.github.softonic.yuicompressorserver;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -13,11 +13,11 @@ import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.mozilla.javascript.EvaluatorException;
 
-import com.github.kpacha.yuicompressorserver.adapter.UnknownContentTypeException;
-import com.github.kpacha.yuicompressorserver.compressor.Compressor;
-import com.github.kpacha.yuicompressorserver.reporter.Reporter;
-import com.github.kpacha.yuicompressorserver.reporter.YuiErrorReporter;
-import com.github.kpacha.yuicompressorserver.utils.Md5Hasher;
+import com.github.softonic.yuicompressorserver.adapter.UnknownContentTypeException;
+import com.github.softonic.yuicompressorserver.compressor.Compressor;
+import com.github.softonic.yuicompressorserver.reporter.Reporter;
+import com.github.softonic.yuicompressorserver.reporter.YuiErrorReporter;
+import com.github.softonic.yuicompressorserver.utils.Md5Hasher;
 
 /**
  * The yuicompressor jetty-based servlet handler

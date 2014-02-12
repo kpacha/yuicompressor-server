@@ -3,6 +3,8 @@ package com.github.kpacha.yuicompressorserver.utils;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
+import com.github.softonic.yuicompressorserver.utils.Md5Hasher;
+
 import junit.framework.TestCase;
 
 public class Md5HasherTest extends TestCase {

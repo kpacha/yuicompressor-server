@@ -1,4 +1,4 @@
-package com.github.kpacha.yuicompressorserver.adapter;
+package com.github.softonic.yuicompressorserver.adapter;
 
 import java.io.BufferedReader;
 import java.io.IOException;

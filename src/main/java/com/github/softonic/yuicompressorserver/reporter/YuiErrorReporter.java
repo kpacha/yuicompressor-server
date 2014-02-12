@@ -1,4 +1,4 @@
-package com.github.kpacha.yuicompressorserver.reporter;
+package com.github.softonic.yuicompressorserver.reporter;
 
 import org.mozilla.javascript.EvaluatorException;
 

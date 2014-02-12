@@ -1,4 +1,4 @@
-package com.github.kpacha.yuicompressorserver;
+package com.github.softonic.yuicompressorserver;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheException;
@@ -11,11 +11,11 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 
-import com.github.kpacha.yuicompressorserver.adapter.AdapterFactory;
-import com.github.kpacha.yuicompressorserver.compressor.CachedCompressor;
-import com.github.kpacha.yuicompressorserver.compressor.Compressor;
-import com.github.kpacha.yuicompressorserver.compressor.YuiCompressor;
-import com.github.kpacha.yuicompressorserver.utils.Md5Hasher;
+import com.github.softonic.yuicompressorserver.adapter.AdapterFactory;
+import com.github.softonic.yuicompressorserver.compressor.CachedCompressor;
+import com.github.softonic.yuicompressorserver.compressor.Compressor;
+import com.github.softonic.yuicompressorserver.compressor.YuiCompressor;
+import com.github.softonic.yuicompressorserver.utils.Md5Hasher;
 
 /**
  * The YuiCompressorServer starts a jetty server and registers a

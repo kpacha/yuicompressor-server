@@ -10,8 +10,12 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
-import com.github.kpacha.yuicompressorserver.reporter.Reporter;
-import com.github.kpacha.yuicompressorserver.reporter.YuiErrorReporter;
+import com.github.softonic.yuicompressorserver.adapter.AdapterFactory;
+import com.github.softonic.yuicompressorserver.adapter.CssCompressorAdapter;
+import com.github.softonic.yuicompressorserver.adapter.JavaScriptCompressorAdapter;
+import com.github.softonic.yuicompressorserver.adapter.UnknownContentTypeException;
+import com.github.softonic.yuicompressorserver.reporter.Reporter;
+import com.github.softonic.yuicompressorserver.reporter.YuiErrorReporter;
 
 public class AdapterFactoryTest extends TestCase {
 

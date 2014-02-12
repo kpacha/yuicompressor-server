@@ -4,6 +4,8 @@ import junit.framework.TestCase;
 
 import org.apache.commons.cli.ParseException;
 
+import com.github.softonic.yuicompressorserver.Configuration;
+
 public class ConfigurationTest extends TestCase {
 
     public void testCacheEnabled() throws ParseException {

@@ -17,10 +17,12 @@ import net.sf.ehcache.CacheManager;
 
 import org.mozilla.javascript.EvaluatorException;
 
-import com.github.kpacha.yuicompressorserver.adapter.UnknownContentTypeException;
-import com.github.kpacha.yuicompressorserver.reporter.Reporter;
-import com.github.kpacha.yuicompressorserver.reporter.YuiErrorReporter;
-import com.github.kpacha.yuicompressorserver.utils.Md5Hasher;
+import com.github.softonic.yuicompressorserver.adapter.UnknownContentTypeException;
+import com.github.softonic.yuicompressorserver.compressor.CachedCompressor;
+import com.github.softonic.yuicompressorserver.compressor.Compressor;
+import com.github.softonic.yuicompressorserver.reporter.Reporter;
+import com.github.softonic.yuicompressorserver.reporter.YuiErrorReporter;
+import com.github.softonic.yuicompressorserver.utils.Md5Hasher;
 
 public class CachedCompressorTest extends TestCase {
     private Compressor compressor;
