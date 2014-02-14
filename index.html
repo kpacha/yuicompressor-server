@@ -80,85 +80,32 @@ $ mvn install
 # ... your deployment process here ...
 
 # start the yuicompressor service
-$ java -jar target/yuicompressor-server-0.2.2-SNAPSHOT-jar-with-dependencies.jar [-p &lt;PORT&gt;] [-c]
+$ java -jar target/yuicompressor-server-0.2.2-SNAPSHOT-jar-with-dependencies.jar [-p &lt;PORT&gt;] [-c] [-m &lt;MAX_INPUT_SIZE&gt;]
 </code></pre>
 
 <p>Note the optional arguments!</p>
 
-<pre><code>-c         disable cache
+<pre><code>-c         enable cache
 -p &lt;arg&gt;   port (default 8080)
+-m &lt;arg&gt;   max input size (default 1024000 bytes)
 </code></pre><p>And you already have a yuicompressor-server running!</p>
 
 <h1>
 <a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h1>
 
-<p>Just send your javascript and css files as a post request to your service.</p>
+<p>Just send your javascript and css files as a post request to your service. The server checks the integrity of the request using the Content-MD5 header, so you need to add this header with the MD5 of the file sent.</p>
 
 <p>Simple demo with curl:</p>
 
-<pre><code>$ curl -H "Content-Type:text/css; charset=utf-8" -X POST -i --data-binary 'a {}       c{ color=red;      }' http://localhost:8080/
+<pre><code>$ curl -H "Content-MD5: acf0ae0101e6762933ee7036297851fd" --data-urlencode "type=css" --data-urlencode "files=main.css" --data-urlencode "input=a {}       c{ color=red;      }" http://localhost:8080/
 # or
-$ curl -H "Content-Type:text/css; charset=utf-8" -X POST -i --data-binary @src/test/resources/background-position.css http://localhost:8080/
+$ curl -H "Content-MD5: <md5_of_file_sent>" --data-urlencode "type=js" --data-urlencode "files=main.js" --data-urlencode "input@main.js" http://localhost:8080/
 </code></pre>
-
-<p>Do not forget to set the <code>Content-Type</code> header with the right charset or get ready to die a painful, lonely death!</p>
 
 <h1>
 <a name="why" class="anchor" href="#why"><span class="octicon octicon-link"></span></a>Why?</h1>
 
 <p>Supose you have several hosts where you have to compress your javascript and css files. Why would you spend so much time doing the same operation again and again? And are your files different from one host to another or are they almost the same? How often do you deploy? Just take the DRY pattern to the next abstraction level and delegate that process to a dedicated service!</p>
-
-<pre><code>$ cd src/test/resources
-$ ab -c 10 -n 100 -H "Content-Type:text/css; charset=utf-8" -p test.css -T "text/css" http://localhost:8080/
-This is ApacheBench, Version 2.3 &lt;$Revision: 1430300 $&gt;
-Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
-Licensed to The Apache Software Foundation, http://www.apache.org/
-
-Benchmarking localhost (be patient).....done
-
-
-Server Software:        Jetty(9.1.z-SNAPSHOT)
-Server Hostname:        localhost
-Server Port:            8080
-
-Document Path:          /
-Document Length:        52 bytes
-
-Concurrency Level:      10
-Time taken for tests:   0.087 seconds
-Complete requests:      100
-Failed requests:        0
-Write errors:           0
-Total transferred:      27900 bytes
-Total body sent:        22900
-HTML transferred:       5200 bytes
-Requests per second:    1143.80 [#/sec] (mean)
-Time per request:       8.743 [ms] (mean)
-Time per request:       0.874 [ms] (mean, across all concurrent requests)
-Transfer rate:          311.64 [Kbytes/sec] received
-                        255.79 kb/s sent
-                        567.43 kb/s total
-
-Connection Times (ms)
-              min  mean[+/-sd] median   max
-Connect:        0    0   0.5      0       2
-Processing:     2    8   4.9      7      31
-Waiting:        2    8   4.6      7      31
-Total:          2    8   5.0      7      31
-
-Percentage of the requests served within a certain time (ms)
-  50%      7
-  66%      8
-  75%     10
-  80%     12
-  90%     16
-  95%     19
-  98%     23
-  99%     31
- 100%     31 (longest request)
-</code></pre>
-
-<p>Was that enough?</p>
 
 <p><a href="https://bitdeli.com/free" title="Bitdeli Badge"><img src="https://d2weczhvl823v0.cloudfront.net/kpacha/yuicompressor-server/trend.png" alt="Bitdeli Badge"></a></p>
         </section>
