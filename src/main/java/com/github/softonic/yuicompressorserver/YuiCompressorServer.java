@@ -100,7 +100,16 @@ public class YuiCompressorServer {
 	 */
 	public void run() throws Exception {
 		server.start();
-		server.join();
+		//server.join();
+	}
+
+	public void shutdown() {
+	    try {
+		server.stop();
+		server.destroy();
+	    } catch (Exception e) {
+		throw new RuntimeException(e);
+	    }
 	}
 
 	private Compressor getCompressor(Configuration configuration) {
